@@ -8,6 +8,8 @@ import type { MaritalStatus, ProvinceCode } from '../types'
 import { ageFromDOB, formatCurrency } from '../utils/format'
 import { oasResidenceFraction } from '../utils/gisCalc'
 import { PROVINCE_LIST } from '../constants/provinces'
+import { useT } from '../i18n'
+import LangToggle from '../components/common/LangToggle'
 
 const maritalOptions: { value: MaritalStatus; label: string }[] = [
   { value: 'single', label: '单身' },
@@ -17,6 +19,7 @@ const maritalOptions: { value: MaritalStatus; label: string }[] = [
 ]
 
 export default function Setup() {
+  const t = useT()
   const navigate = useNavigate()
   const createProfile = useProfileStore((s) => s.createProfile)
   const addProperty = usePropertyStore((s) => s.addProperty)
@@ -75,7 +78,10 @@ export default function Setup() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
+    <div className="relative flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
+      <div className="absolute right-5 top-5">
+        <LangToggle />
+      </div>
       <div className="card w-full max-w-lg p-8">
         <div className="mb-6 flex items-center gap-2">
           {[1, 2, 3].map((s) => (
@@ -91,23 +97,23 @@ export default function Setup() {
         {step === 1 && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">基本信息</h2>
+              <h2 className="text-xl font-semibold">{t('基本信息')}</h2>
               <p className="text-sm text-slate-400">Step 1 / 3</p>
             </div>
             <FormInput label="姓名" value={name} onChange={setName} placeholder="张三" />
             <div>
               <FormInput label="出生日期" type="date" value={dob} onChange={setDob} />
               {age !== null && (
-                <p className="mt-1 text-xs text-slate-400">当前年龄：{age} 岁</p>
+                <p className="mt-1 text-xs text-slate-400">{t('当前年龄：{n} 岁', { n: age })}</p>
               )}
             </div>
             <div className="grid grid-cols-2 gap-3">
               <FormInput label="居住城市" value={city} onChange={setCity} />
               <div>
-                <span className="label">省份</span>
+                <span className="label">{t('省份')}</span>
                 <select className="input" value={province} onChange={(e) => setProvince(e.target.value as ProvinceCode)}>
                   {PROVINCE_LIST.map((p) => (
-                    <option key={p.code} value={p.code}>{p.name}</option>
+                    <option key={p.code} value={p.code}>{t(p.name)}</option>
                   ))}
                 </select>
               </div>
@@ -123,13 +129,16 @@ export default function Setup() {
               {arrivalYear && dob && (
                 <p className={`mt-1 text-xs ${oasFraction === 0 ? 'text-rose-500' : 'text-slate-400'}`}>
                   {oasFraction === 0
-                    ? '居住不满10年，65岁时暂不符合OAS资格'
-                    : `OAS 按居住年限折算：${Math.round(oasFraction * 40)}/40 年 → 全额的 ${(oasFraction * 100).toFixed(0)}%`}
+                    ? t('居住不满10年，65岁时暂不符合OAS资格')
+                    : t('OAS 按居住年限折算：{a}/40 年 → 全额的 {b}%', {
+                        a: Math.round(oasFraction * 40),
+                        b: (oasFraction * 100).toFixed(0),
+                      })}
                 </p>
               )}
             </div>
             <div>
-              <span className="label">婚姻状态</span>
+              <span className="label">{t('婚姻状态')}</span>
               <div className="grid grid-cols-4 gap-2">
                 {maritalOptions.map((o) => (
                   <button
@@ -139,7 +148,7 @@ export default function Setup() {
                     }`}
                     onClick={() => setMarital(o.value)}
                   >
-                    {o.label}
+                    {t(o.label)}
                   </button>
                 ))}
               </div>
@@ -150,7 +159,7 @@ export default function Setup() {
                 disabled={!canProceed}
                 onClick={() => setStep(2)}
               >
-                下一步
+                {t('下一步')}
               </button>
             </div>
           </div>
@@ -159,8 +168,8 @@ export default function Setup() {
         {step === 2 && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">快速添加主要资产</h2>
-              <p className="text-sm text-slate-400">Step 2 / 3 · 可跳过，之后再补充</p>
+              <h2 className="text-xl font-semibold">{t('快速添加主要资产')}</h2>
+              <p className="text-sm text-slate-400">Step 2 / 3 · {t('可跳过，之后再补充')}</p>
             </div>
             <FormInput
               label="自住房当前市值"
@@ -179,7 +188,7 @@ export default function Setup() {
               placeholder="95000"
             />
             <div className="rounded-lg bg-slate-50 p-3">
-              <div className="mb-2 text-sm font-medium text-slate-700">CPP 养老金（可选）</div>
+              <div className="mb-2 text-sm font-medium text-slate-700">{t('CPP 养老金（可选）')}</div>
               <div className="grid grid-cols-2 gap-3">
                 <FormInput
                   label="65岁预估月额"
@@ -192,15 +201,15 @@ export default function Setup() {
                 <FormInput label="开始领取年龄 (60-70)" type="number" value={cppStartAge} onChange={setCppStartAge} />
               </div>
               <p className="mt-1 text-xs text-slate-400">
-                提前领每月 −0.6%，延后领每月 +0.7%，自动换算。
+                {t('提前领每月 −0.6%，延后领每月 +0.7%，自动换算。')}
               </p>
             </div>
             <div className="flex justify-between pt-2">
               <button className="btn-secondary" onClick={() => setStep(1)}>
-                上一步
+                {t('上一步')}
               </button>
               <button className="btn-primary" onClick={() => setStep(3)}>
-                下一步
+                {t('下一步')}
               </button>
             </div>
           </div>
@@ -209,25 +218,25 @@ export default function Setup() {
         {step === 3 && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">设置完成</h2>
+              <h2 className="text-xl font-semibold">{t('设置完成')}</h2>
               <p className="text-sm text-slate-400">Step 3 / 3</p>
             </div>
             <div className="space-y-2 rounded-lg bg-slate-50 p-4 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">姓名</span>
+                <span className="text-slate-500">{t('姓名')}</span>
                 <span className="font-medium">{name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">年龄</span>
-                <span className="font-medium">{age} 岁</span>
+                <span className="text-slate-500">{t('年龄')}</span>
+                <span className="font-medium">{age} {t('岁')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">城市</span>
+                <span className="text-slate-500">{t('城市')}</span>
                 <span className="font-medium">{city}</span>
               </div>
               {Number(homeValue) > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">自住房</span>
+                  <span className="text-slate-500">{t('自住房')}</span>
                   <span className="font-medium">{formatCurrency(Number(homeValue))}</span>
                 </div>
               )}
@@ -240,10 +249,10 @@ export default function Setup() {
             </div>
             <div className="flex justify-between pt-2">
               <button className="btn-secondary" onClick={() => setStep(2)}>
-                上一步
+                {t('上一步')}
               </button>
               <button className="btn-primary" onClick={finish}>
-                开始使用
+                {t('开始使用')}
               </button>
             </div>
           </div>

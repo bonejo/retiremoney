@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/layout/Layout'
-import InviteGate from './components/common/InviteGate'
+import FeedbackButton from './components/common/FeedbackButton'
 import Welcome from './pages/Welcome'
 import Setup from './pages/Setup'
 import Dashboard from './pages/Dashboard'
@@ -48,8 +48,9 @@ export default function App() {
   useEffect(() => { void init() }, [init])
 
   return (
-    <InviteGate>
+    <>
       <DataFileBanner />
+      <FeedbackButton />
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/setup" element={<Setup />} />
@@ -72,6 +73,6 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </InviteGate>
+    </>
   )
 }

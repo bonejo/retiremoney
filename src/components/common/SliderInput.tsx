@@ -1,3 +1,5 @@
+import { useT } from '../../i18n'
+
 interface SliderInputProps {
   label: string
   value: number // stored as a fraction, e.g. 0.0345
@@ -17,10 +19,11 @@ export default function SliderInput({
   max = 0.12,
   step = 0.005,
 }: SliderInputProps) {
+  const t = useT() // labels are Chinese dictionary keys; untranslated ones fall through
   return (
     <label className="block">
       <div className="flex items-center justify-between">
-        <span className="label mb-0">{label}</span>
+        <span className="label mb-0">{t(label)}</span>
         <span className="flex items-center gap-1 text-sm font-medium text-brand-600">
           <input
             type="number"

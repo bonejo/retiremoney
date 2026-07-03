@@ -10,6 +10,7 @@ import { formatCurrency } from '../utils/format'
 import { monthlyAmount, totalMonthlyExpenses } from '../utils/expenseCalc'
 import { computePropertyTax } from '../utils/propertyCalc'
 import { EXPENSE_CATEGORY_LABELS } from '../constants/bcTaxRates2026'
+import { useT } from '../i18n'
 
 const categories: ExpenseCategory[] = [
   'utilities', 'vehicle', 'food_dining', 'healthcare', 'travel',
@@ -24,6 +25,7 @@ const freqLabels: Record<ExpenseFrequency, string> = {
 }
 
 export default function Expenses() {
+  const t = useT()
   const { expenses, addExpense, updateExpense, removeExpense } = useExpenseStore()
   const properties = usePropertyStore((s) => s.properties)
   const [editing, setEditing] = useState<Expense | null>(null)
@@ -32,11 +34,11 @@ export default function Expenses() {
   // Property-derived expenses are read-only (imported from the property module).
   const propertyExpenses = properties.flatMap((p) => {
     const rows: { label: string; monthly: number }[] = []
-    if (p.mortgage?.hasMortgage) rows.push({ label: `${p.name} · 月供`, monthly: p.mortgage.monthlyPayment })
+    if (p.mortgage?.hasMortgage) rows.push({ label: `${p.name} · ${t('月供')}`, monthly: p.mortgage.monthlyPayment })
     const tax = computePropertyTax(p)
-    if (tax > 0) rows.push({ label: `${p.name} · 地税(月均)`, monthly: tax / 12 })
-    if (p.strataFee) rows.push({ label: `${p.name} · 物业费`, monthly: p.strataFee })
-    if (p.insurance) rows.push({ label: `${p.name} · 保险(月均)`, monthly: p.insurance / 12 })
+    if (tax > 0) rows.push({ label: `${p.name} · ${t('地税(月均)')}`, monthly: tax / 12 })
+    if (p.strataFee) rows.push({ label: `${p.name} · ${t('物业费')}`, monthly: p.strataFee })
+    if (p.insurance) rows.push({ label: `${p.name} · ${t('保险(月均)')}`, monthly: p.insurance / 12 })
     return rows
   })
 
@@ -53,31 +55,31 @@ export default function Expenses() {
   return (
     <Page
       title="支出管理"
-      action={<button className="btn-primary" onClick={() => { setEditing(emptyExpense()); setIsNew(true) }}>+ 添加支出</button>}
+      action={<button className="btn-primary" onClick={() => { setEditing(emptyExpense()); setIsNew(true) }}>{t('+ 添加支出')}</button>}
     >
       <div className="mb-4 grid gap-4 sm:grid-cols-3">
         <div className="card p-4">
-          <div className="text-sm text-slate-500">月总固定支出</div>
+          <div className="text-sm text-slate-500">{t('月总固定支出')}</div>
           <div className="text-2xl font-semibold">{formatCurrency(grandTotal)}</div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-slate-500">房产相关(自动)</div>
+          <div className="text-sm text-slate-500">{t('房产相关(自动)')}</div>
           <div className="text-2xl font-semibold text-slate-700">{formatCurrency(propertyMonthly)}</div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-slate-500">年总支出</div>
+          <div className="text-sm text-slate-500">{t('年总支出')}</div>
           <div className="text-2xl font-semibold">{formatCurrency(grandTotal * 12)}</div>
         </div>
       </div>
 
       {propertyExpenses.length > 0 && (
         <div className="card mb-4 p-5">
-          <h3 className="mb-3 font-semibold">🏠 房产相关（自动导入，不可编辑）</h3>
+          <h3 className="mb-3 font-semibold">🏠 {t('房产相关（自动导入，不可编辑）')}</h3>
           <div className="divide-y divide-slate-100">
             {propertyExpenses.map((r, i) => (
               <div key={i} className="flex items-center justify-between py-2 text-sm">
                 <span className="text-slate-600">{r.label}</span>
-                <span className="font-medium">{formatCurrency(r.monthly)}/月</span>
+                <span className="font-medium">{formatCurrency(r.monthly)}{t('/月')}</span>
               </div>
             ))}
           </div>
@@ -85,9 +87,9 @@ export default function Expenses() {
       )}
 
       <div className="card p-5">
-        <h3 className="mb-3 font-semibold">📝 其他支出</h3>
+        <h3 className="mb-3 font-semibold">📝 {t('其他支出')}</h3>
         {expenses.length === 0 ? (
-          <p className="py-6 text-center text-slate-400">还没有手动添加的支出。</p>
+          <p className="py-6 text-center text-slate-400">{t('还没有手动添加的支出。')}</p>
         ) : (
           <div className="divide-y divide-slate-100">
             {expenses.map((e) => (
@@ -95,18 +97,18 @@ export default function Expenses() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{e.name}</span>
-                    <Badge color="gray">{EXPENSE_CATEGORY_LABELS[e.category]}</Badge>
-                    {e.inflationLinked && <Badge color="blue">通胀调整</Badge>}
+                    <Badge color="gray">{t(EXPENSE_CATEGORY_LABELS[e.category])}</Badge>
+                    {e.inflationLinked && <Badge color="blue">{t('通胀调整')}</Badge>}
                   </div>
                   <div className="text-xs text-slate-400">
-                    {formatCurrency(e.amount)} · {freqLabels[e.frequency]}
-                    {e.frequency !== 'monthly' && e.frequency !== 'one_time' && ` (≈${formatCurrency(monthlyAmount(e))}/月)`}
+                    {formatCurrency(e.amount)} · {t(freqLabels[e.frequency])}
+                    {e.frequency !== 'monthly' && e.frequency !== 'one_time' && ` (≈${formatCurrency(monthlyAmount(e))}${t('/月')})`}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-medium">{formatCurrency(monthlyAmount(e))}/月</span>
-                  <button className="text-sm text-brand-600" onClick={() => { setEditing(e); setIsNew(false) }}>编辑</button>
-                  <button className="text-sm text-rose-500" onClick={() => removeExpense(e.id)}>删除</button>
+                  <span className="font-medium">{formatCurrency(monthlyAmount(e))}{t('/月')}</span>
+                  <button className="text-sm text-brand-600" onClick={() => { setEditing(e); setIsNew(false) }}>{t('编辑')}</button>
+                  <button className="text-sm text-rose-500" onClick={() => removeExpense(e.id)}>{t('删除')}</button>
                 </div>
               </div>
             ))}
@@ -114,7 +116,7 @@ export default function Expenses() {
         )}
       </div>
 
-      <Drawer open={editing !== null} onClose={() => setEditing(null)} title={isNew ? '添加支出' : '编辑支出'}>
+      <Drawer open={editing !== null} onClose={() => setEditing(null)} title={isNew ? t('添加支出') : t('编辑支出')}>
         {editing && (
           <ExpenseForm
             initial={editing}

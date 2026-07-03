@@ -10,6 +10,7 @@ import {
 } from 'recharts'
 import type { ProjectionPoint } from '../../utils/projectionCalc'
 import { formatCurrency, formatWan } from '../../utils/format'
+import { useT } from '../../i18n'
 
 interface ProjectionChartProps {
   data: ProjectionPoint[]
@@ -29,13 +30,14 @@ export default function ProjectionChart({
   height = 360,
   showDebt = false,
 }: ProjectionChartProps) {
+  const t = useT()
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 10, right: 16, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
           dataKey="age"
-          tickFormatter={(a) => `${a}岁`}
+          tickFormatter={(a) => t('{age}岁', { age: a })}
           tick={{ fontSize: 12, fill: '#64748b' }}
         />
         <YAxis
@@ -45,7 +47,7 @@ export default function ProjectionChart({
         />
         <Tooltip
           formatter={(value: number) => formatCurrency(value)}
-          labelFormatter={(age) => `${age}岁`}
+          labelFormatter={(age) => t('{age}岁', { age: String(age) })}
           contentStyle={{ fontSize: 13, borderRadius: 8 }}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -54,7 +56,7 @@ export default function ProjectionChart({
             key={s.key}
             type="monotone"
             dataKey={s.key}
-            name={s.name}
+            name={t(s.name)}
             stroke={s.color}
             strokeWidth={s.width}
             dot={false}
@@ -64,7 +66,7 @@ export default function ProjectionChart({
           <Line
             type="monotone"
             dataKey="totalDebt"
-            name="总负债"
+            name={t('总负债')}
             stroke="#ef4444"
             strokeWidth={1.5}
             dot={false}

@@ -9,11 +9,13 @@ import { useNavigate } from 'react-router-dom'
 import type { ProvinceCode } from '../types'
 import { PROVINCE_LIST } from '../constants/provinces'
 import { useDataFileStore } from '../store/dataFileStore'
+import { useT } from '../i18n'
 
 // Keys used by the persist middleware; exported/cleared together.
 const STORAGE_KEYS = ['rp-profile', 'rp-properties', 'rp-investments', 'rp-expenses', 'rp-assumptions']
 
 export default function Settings() {
+  const t = useT()
   const navigate = useNavigate()
   const { assumptions, update, reset } = useAssumptionsStore()
   const profile = useProfileStore((s) => s.profile)
@@ -71,14 +73,14 @@ export default function Settings() {
         {profile && (
           <Section title="个人与省份">
             <div>
-              <span className="label">所在省份（影响省税与遗产认证费）</span>
+              <span className="label">{t('所在省份（影响省税与遗产认证费）')}</span>
               <select
                 className="input"
                 value={profile.province}
                 onChange={(e) => updateProfile({ province: e.target.value as ProvinceCode })}
               >
                 {PROVINCE_LIST.map((p) => (
-                  <option key={p.code} value={p.code}>{p.name}</option>
+                  <option key={p.code} value={p.code}>{t(p.name)}</option>
                 ))}
               </select>
             </div>
@@ -152,14 +154,14 @@ export default function Settings() {
 
         <Section title="数据管理">
           <div className="space-y-3">
-            <button className="btn-secondary w-full" onClick={exportData}>导出数据 (JSON)</button>
+            <button className="btn-secondary w-full" onClick={exportData}>{t('导出数据 (JSON)')}</button>
             <label className="btn-secondary w-full cursor-pointer">
-              导入数据
+              {t('导入数据')}
               <input type="file" accept="application/json" className="hidden" onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
             </label>
-            <button className="btn-secondary w-full" onClick={() => { reset(); }}>恢复默认假设参数</button>
-            <button className="btn w-full bg-rose-50 text-rose-600 hover:bg-rose-100" onClick={clearAll}>清除所有数据</button>
-            <button className="btn-ghost w-full" onClick={() => navigate('/dashboard')}>返回仪表板</button>
+            <button className="btn-secondary w-full" onClick={() => { reset(); }}>{t('恢复默认假设参数')}</button>
+            <button className="btn w-full bg-rose-50 text-rose-600 hover:bg-rose-100" onClick={clearAll}>{t('清除所有数据')}</button>
+            <button className="btn-ghost w-full" onClick={() => navigate('/dashboard')}>{t('返回仪表板')}</button>
           </div>
         </Section>
       </div>
@@ -170,12 +172,13 @@ export default function Settings() {
 
 // Single-file local storage: connect a JSON file that mirrors all app data.
 function DataFileSection() {
+  const t = useT()
   const { status, fileName, createNew, openExisting, reconnect, disconnect } = useDataFileStore()
 
   if (status === 'unsupported') {
     return (
       <p className="text-sm text-slate-400">
-        当前浏览器不支持文件直连（需 Chrome/Edge）。请使用下方「导出数据」手动备份。
+        {t('当前浏览器不支持文件直连（需 Chrome/Edge）。请使用下方「导出数据」手动备份。')}
       </p>
     )
   }
@@ -183,31 +186,31 @@ function DataFileSection() {
     <div className="space-y-3">
       {status === 'connected' ? (
         <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm">
-          <span className="text-emerald-700">✓ 已连接：{fileName}（自动保存中）</span>
-          <button className="btn-ghost text-xs text-slate-500" onClick={() => void disconnect()}>断开</button>
+          <span className="text-emerald-700">{t('✓ 已连接：{name}（自动保存中）', { name: fileName ?? '' })}</span>
+          <button className="btn-ghost text-xs text-slate-500" onClick={() => void disconnect()}>{t('断开')}</button>
         </div>
       ) : status === 'need-permission' ? (
         <button className="btn-primary w-full" onClick={() => void reconnect()}>
-          恢复连接「{fileName}」
+          {t('恢复连接「{name}」', { name: fileName ?? '' })}
         </button>
       ) : (
         <>
-          <button className="btn-primary w-full" onClick={() => void createNew()}>新建数据文件</button>
-          <button className="btn-secondary w-full" onClick={() => void openExisting()}>打开现有数据文件</button>
+          <button className="btn-primary w-full" onClick={() => void createNew()}>{t('新建数据文件')}</button>
+          <button className="btn-secondary w-full" onClick={() => void openExisting()}>{t('打开现有数据文件')}</button>
         </>
       )}
       <p className="text-xs text-slate-400">
-        所有数据保存在您选择的本地 JSON 文件中并自动同步，换电脑或浏览器时打开该文件即可继续。
-        数据不上传任何服务器。
+        {t('所有数据保存在您选择的本地 JSON 文件中并自动同步，换电脑或浏览器时打开该文件即可继续。数据不上传任何服务器。')}
       </p>
     </div>
   )
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const t = useT()
   return (
     <div className="card p-5">
-      <h3 className="mb-4 font-semibold">{title}</h3>
+      <h3 className="mb-4 font-semibold">{t(title)}</h3>
       <div className="space-y-3">{children}</div>
     </div>
   )

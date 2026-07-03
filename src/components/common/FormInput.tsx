@@ -1,3 +1,5 @@
+import { useT } from '../../i18n'
+
 interface FormInputProps {
   label: string
   value: number | string
@@ -20,9 +22,10 @@ export default function FormInput({
   placeholder,
   step,
 }: FormInputProps) {
+  const t = useT() // labels are Chinese dictionary keys; untranslated ones fall through
   return (
     <label className="block">
-      <span className="label">{label}</span>
+      <span className="label">{t(label)}</span>
       <div className="relative">
         {prefix && (
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
@@ -34,7 +37,7 @@ export default function FormInput({
           type={type}
           value={value}
           step={step}
-          placeholder={placeholder}
+          placeholder={placeholder ? t(placeholder) : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
         {suffix && (

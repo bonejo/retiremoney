@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useT } from '../../i18n'
 
 interface DrawerProps {
   open: boolean
@@ -10,6 +11,7 @@ interface DrawerProps {
 
 // Right-side slide-over used for add/edit forms.
 export default function Drawer({ open, onClose, title, children, footer }: DrawerProps) {
+  const t = useT()
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -29,7 +31,7 @@ export default function Drawer({ open, onClose, title, children, footer }: Drawe
       />
       <div className="relative flex h-full w-full max-w-xl flex-col bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-lg font-semibold">{t(title)}</h2>
           <button className="btn-ghost" onClick={onClose} aria-label="关闭">
             ✕
           </button>
