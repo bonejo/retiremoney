@@ -1,9 +1,0 @@
-# Deploy as a static-asset Worker (no server code): build to dist/, serve as a
-# single-page app. This bypasses Cloudflare's Vite-plugin auto-config, so the
-# app stays on Vite 5.
-name = "retiremoney"
-compatibility_date = "2025-06-01"
-
-[assets]
-directory = "./dist"
-not_found_handling = "single-page-application"
