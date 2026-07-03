@@ -78,11 +78,12 @@ export default function Setup() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
-      <div className="absolute right-5 top-5">
-        <LangToggle />
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
       <div className="card w-full max-w-lg p-8">
+        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+          <span className="text-sm text-slate-400">🌐 语言 / Language</span>
+          <LangToggle />
+        </div>
         <div className="mb-6 flex items-center gap-2">
           {[1, 2, 3].map((s) => (
             <div

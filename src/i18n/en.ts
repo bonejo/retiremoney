@@ -28,6 +28,7 @@ export const EN: Record<string, string> = {
   // Setup
   '基本信息': 'Basic Info',
   '姓名': 'Name',
+  '张三': 'e.g. John Smith',
   '出生日期': 'Date of Birth',
   '当前年龄：{n} 岁': 'Current age: {n}',
   '居住城市': 'City',
