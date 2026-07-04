@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/layout/Layout'
-import FeedbackButton from './components/common/FeedbackButton'
 import Welcome from './pages/Welcome'
 import Setup from './pages/Setup'
 import Dashboard from './pages/Dashboard'
@@ -50,7 +49,6 @@ export default function App() {
   return (
     <>
       <DataFileBanner />
-      <FeedbackButton />
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/setup" element={<Setup />} />
