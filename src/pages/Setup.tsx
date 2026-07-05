@@ -8,7 +8,7 @@ import type { MaritalStatus, ProvinceCode } from '../types'
 import { ageFromDOB, formatCurrency } from '../utils/format'
 import { oasResidenceFraction } from '../utils/gisCalc'
 import { PROVINCE_LIST } from '../constants/provinces'
-import { useT } from '../i18n'
+import { useT, useLangStore } from '../i18n'
 import LangToggle from '../components/common/LangToggle'
 
 const maritalOptions: { value: MaritalStatus; label: string }[] = [
@@ -20,6 +20,9 @@ const maritalOptions: { value: MaritalStatus; label: string }[] = [
 
 export default function Setup() {
   const t = useT()
+  const lang = useLangStore((s) => s.lang)
+  const setLang = useLangStore((s) => s.setLang)
+  const [langChosen, setLangChosen] = useState(false)
   const navigate = useNavigate()
   const createProfile = useProfileStore((s) => s.createProfile)
   const addProperty = usePropertyStore((s) => s.addProperty)
@@ -75,6 +78,42 @@ export default function Setup() {
       addInvestment(inv)
     }
     navigate('/dashboard')
+  }
+
+  // Step 0 — choose the interface language before creating the profile.
+  if (!langChosen) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
+        <div className="card w-full max-w-md p-8 text-center">
+          <div className="mb-3 text-5xl">🌐</div>
+          <h2 className="text-xl font-semibold text-slate-900">选择语言 / Choose Language</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            建立档案前请先选择界面语言
+            <br />
+            Select your language to begin
+          </p>
+          <div className="mt-7 grid grid-cols-2 gap-4">
+            <button
+              className={`rounded-xl border-2 py-8 text-xl font-medium transition ${
+                lang === 'zh' ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-slate-200 text-slate-700 hover:border-brand-300'
+              }`}
+              onClick={() => { setLang('zh'); setLangChosen(true) }}
+            >
+              中文
+            </button>
+            <button
+              className={`rounded-xl border-2 py-8 text-xl font-medium transition ${
+                lang === 'en' ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-slate-200 text-slate-700 hover:border-brand-300'
+              }`}
+              onClick={() => { setLang('en'); setLangChosen(true) }}
+            >
+              English
+            </button>
+          </div>
+          <p className="mt-6 text-xs text-slate-400">可随时在右上角切换 / You can switch anytime</p>
+        </div>
+      </div>
+    )
   }
 
   return (
