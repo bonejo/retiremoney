@@ -14,9 +14,11 @@ export default function Welcome() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-brand-50 to-slate-50 px-6">
       <div className="w-full max-w-md text-center">
-        <div className="mb-6 flex items-center justify-center gap-2">
-          <span className="text-sm text-slate-400">🌐</span>
-          <LangToggle />
+        <div className="mb-6">
+          <div className="mb-1.5 text-xs font-medium text-slate-400">🌐 选择语言 / Choose Language</div>
+          <div className="flex justify-center">
+            <LangToggle />
+          </div>
         </div>
         <div className="mb-2 text-5xl">🌇</div>
         <h1 className="text-3xl font-bold text-slate-900">{t('退休财务规划')}</h1>
