@@ -11,8 +11,20 @@ interface LangState {
   setLang: (l: Lang) => void
 }
 
+// First-visit default: use Chinese only if the browser/system locale is Chinese,
+// otherwise English. Once the user picks a language it is persisted and wins.
+function detectInitialLang(): Lang {
+  if (typeof navigator !== 'undefined') {
+    // Only the PRIMARY locale decides — many English users list Chinese as a
+    // secondary language and should still get English by default.
+    const primary = (navigator.languages?.[0] || navigator.language || '').toLowerCase()
+    if (primary.startsWith('zh')) return 'zh'
+  }
+  return 'en'
+}
+
 export const useLangStore = create<LangState>()(
-  persist((set) => ({ lang: 'zh', setLang: (lang) => set({ lang }) }), { name: 'rp-lang' }),
+  persist((set) => ({ lang: detectInitialLang(), setLang: (lang) => set({ lang }) }), { name: 'rp-lang' }),
 )
 
 export function translate(lang: Lang, key: string, params?: Record<string, string | number>): string {
