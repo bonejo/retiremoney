@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Welcome from './pages/Welcome'
 import Setup from './pages/Setup'
+import Wizard from './pages/Wizard'
 import Dashboard from './pages/Dashboard'
 import Properties from './pages/Properties'
 import Investments from './pages/Investments'
@@ -52,6 +53,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/setup" element={<Setup />} />
+        <Route
+          path="/wizard"
+          element={
+            <RequireProfile>
+              <Wizard />
+            </RequireProfile>
+          }
+        />
         <Route
           element={
             <RequireProfile>

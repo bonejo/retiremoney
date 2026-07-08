@@ -55,6 +55,16 @@ export default function Layout() {
     </div>
   )
 
+  const wizardButton = (onClick?: () => void) => (
+    <NavLink
+      to="/wizard"
+      onClick={onClick}
+      className="mx-3 mb-2 flex items-center justify-center gap-2 rounded-lg border-2 border-brand-500 px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50"
+    >
+      📋 {t('财务问卷')}
+    </NavLink>
+  )
+
   return (
     <div className="flex min-h-screen">
       {/* Desktop sidebar */}
@@ -67,6 +77,7 @@ export default function Layout() {
           </div>
         </div>
         {profileCard}
+        {wizardButton()}
         {navLinks()}
         <div className="px-5 py-4 text-[11px] leading-relaxed text-slate-400">
           {t('您的数据仅保存在本设备，清除浏览器数据会丢失。')}
@@ -96,6 +107,7 @@ export default function Layout() {
               <button className="btn-ghost text-lg" onClick={() => setMenuOpen(false)} aria-label="关闭">✕</button>
             </div>
             {profileCard}
+            {wizardButton(() => setMenuOpen(false))}
             {navLinks(() => setMenuOpen(false))}
             <div className="px-5 py-4 text-[11px] leading-relaxed text-slate-400">
               {t('您的数据仅保存在本设备，清除浏览器数据会丢失。')}
