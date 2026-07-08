@@ -5,10 +5,11 @@ import LangToggle from '../components/common/LangToggle'
 import { useProfileStore } from '../store/profileStore'
 import { usePropertyStore, emptyProperty } from '../store/propertyStore'
 import { useInvestmentStore, emptyInvestment } from '../store/investmentStore'
-import type { InvestmentType } from '../types'
+import { useExpenseStore } from '../store/expenseStore'
+import type { ExpenseCategory, InvestmentType } from '../types'
 import { useT } from '../i18n'
 
-const TOTAL = 4
+const TOTAL = 5
 
 // Guided financial questionnaire: property → mortgage → income → investments.
 // Pre-fills from any existing data and updates in place, so it is safe to
@@ -20,6 +21,8 @@ export default function Wizard() {
   const { addProperty, updateProperty } = usePropertyStore()
   const investments = useInvestmentStore((s) => s.investments)
   const { addInvestment, updateInvestment } = useInvestmentStore()
+  const expenses = useExpenseStore((s) => s.expenses)
+  const { addExpense, updateExpense, removeExpense } = useExpenseStore()
   const profile = useProfileStore((s) => s.profile)
   const updateProfile = useProfileStore((s) => s.updateProfile)
 
@@ -55,7 +58,22 @@ export default function Wizard() {
   const [nonReg, setNonReg] = useState(() => { const i = invByType('non_registered'); return i ? String(i.currentBalance) : '' })
   const [nonRegAcb, setNonRegAcb] = useState(() => { const i = invByType('non_registered'); return i?.acb != null ? String(i.acb) : '' })
 
+  // Expenses (wizard-owned, fixed ids so re-running updates in place)
+  const [living, setLiving] = useState(() => { const e = expenses.find((x) => x.id === 'wiz-living'); return e ? String(e.amount) : '' })
+  const [health, setHealth] = useState(() => { const e = expenses.find((x) => x.id === 'wiz-health'); return e ? String(e.amount) : '' })
+
   const priority: Record<string, number> = { non_registered: 1, TFSA: 2, RRSP: 3 }
+
+  function upsertExpense(id: string, name: string, category: ExpenseCategory, amount: string) {
+    const existing = expenses.find((x) => x.id === id)
+    if (Number(amount) <= 0) {
+      if (existing) removeExpense(id)
+      return
+    }
+    const e = { id, name, category, amount: Number(amount), frequency: 'monthly' as const, inflationLinked: true }
+    if (existing) updateExpense(id, e)
+    else addExpense(e)
+  }
 
   function upsertInvestment(type: InvestmentType, balance: string, acb?: string) {
     if (Number(balance) <= 0) return
@@ -112,10 +130,14 @@ export default function Wizard() {
     upsertInvestment('RRSP', rrsp)
     upsertInvestment('non_registered', nonReg, nonRegAcb)
 
+    // Expenses
+    upsertExpense('wiz-living', t('生活开支'), 'other', living)
+    upsertExpense('wiz-health', t('医疗'), 'healthcare', health)
+
     navigate('/dashboard')
   }
 
-  const stepTitle = [t('房产'), t('房贷'), t('收入'), t('投资')][step - 1]
+  const stepTitle = [t('房产'), t('房贷'), t('收入'), t('投资'), t('支出')][step - 1]
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
@@ -213,6 +235,15 @@ export default function Wizard() {
               <FormInput label="非注册原始成本 (ACB)" type="number" prefix="$" value={nonRegAcb} onChange={setNonRegAcb} />
             </div>
             <p className="text-xs text-slate-400">{t('可留空，之后在「投资账户」页添加更多账户（GIC、家庭借款等）。')}</p>
+          </div>
+        )}
+
+        {step === 5 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">🧾 {t('支出')}</h2>
+            <FormInput label="每月生活开支" type="number" prefix="$" value={living} onChange={setLiving} placeholder="4000" />
+            <FormInput label="每月医疗开支" type="number" prefix="$" value={health} onChange={setHealth} placeholder="300" />
+            <p className="text-xs text-slate-400">{t('填每月大致金额即可；之后可在「支出管理」页细分（车辆、旅游、保险等）。')}</p>
           </div>
         )}
 

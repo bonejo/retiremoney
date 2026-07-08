@@ -144,6 +144,7 @@ function ExpenseForm({
   onSave: (e: Expense) => void
   onCancel: () => void
 }) {
+  const t = useT()
   const [e, setE] = useState<Expense>(initial)
   const set = (patch: Partial<Expense>) => setE((prev) => ({ ...prev, ...patch }))
   const num = (v: string) => (v === '' ? 0 : Number(v))
@@ -153,43 +154,43 @@ function ExpenseForm({
       <div className="flex-1 space-y-4">
         <FormInput label="支出名称" value={e.name} onChange={(v) => set({ name: v })} placeholder="食品杂货" />
         <div>
-          <span className="label">分类</span>
+          <span className="label">{t('分类')}</span>
           <select className="input" value={e.category} onChange={(ev) => set({ category: ev.target.value as ExpenseCategory })}>
             {categories.map((c) => (
-              <option key={c} value={c}>{EXPENSE_CATEGORY_LABELS[c]}</option>
+              <option key={c} value={c}>{t(EXPENSE_CATEGORY_LABELS[c])}</option>
             ))}
           </select>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <FormInput label="金额" type="number" prefix="$" value={e.amount || ''} onChange={(v) => set({ amount: num(v) })} />
           <div>
-            <span className="label">频率</span>
+            <span className="label">{t('频率')}</span>
             <select className="input" value={e.frequency} onChange={(ev) => set({ frequency: ev.target.value as ExpenseFrequency })}>
               {(Object.keys(freqLabels) as ExpenseFrequency[]).map((f) => (
-                <option key={f} value={f}>{freqLabels[f]}</option>
+                <option key={f} value={f}>{t(freqLabels[f])}</option>
               ))}
             </select>
           </div>
         </div>
         {properties.length > 0 && (
           <div>
-            <span className="label">归属房产（可选）</span>
+            <span className="label">{t('归属房产（可选）')}</span>
             <select
               className="input"
               value={e.propertyId ?? ''}
               onChange={(ev) => set({ propertyId: ev.target.value || undefined })}
             >
-              <option value="">不归属任何房产</option>
+              <option value="">{t('不归属任何房产')}</option>
               {properties.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-slate-400">归属后可在房产页看到该房产的年度收支平衡。</p>
+            <p className="mt-1 text-xs text-slate-400">{t('归属后可在房产页看到该房产的年度收支平衡。')}</p>
           </div>
         )}
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={e.inflationLinked} onChange={(ev) => set({ inflationLinked: ev.target.checked })} />
-          跟随通胀增长
+          {t('跟随通胀增长')}
         </label>
         <div className="grid grid-cols-2 gap-3">
           <FormInput label="开始年龄(可选)" type="number" value={e.startAge ?? ''} onChange={(v) => set({ startAge: v === '' ? undefined : num(v) })} />
@@ -198,8 +199,8 @@ function ExpenseForm({
         <FormInput label="备注" value={e.notes ?? ''} onChange={(v) => set({ notes: v })} />
       </div>
       <div className="mt-4 flex justify-end gap-2 border-t border-slate-200 pt-4">
-        <button className="btn-secondary" onClick={onCancel}>取消</button>
-        <button className="btn-primary" onClick={() => onSave(e)} disabled={!e.name.trim()}>保存</button>
+        <button className="btn-secondary" onClick={onCancel}>{t('取消')}</button>
+        <button className="btn-primary" onClick={() => onSave(e)} disabled={!e.name.trim()}>{t('保存')}</button>
       </div>
     </div>
   )
