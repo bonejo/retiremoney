@@ -6,7 +6,7 @@ import { usePropertyStore } from '../store/propertyStore'
 import { useInvestmentStore } from '../store/investmentStore'
 import { useExpenseStore } from '../store/expenseStore'
 import { useNavigate } from 'react-router-dom'
-import type { ProvinceCode } from '../types'
+import type { Profile, ProvinceCode } from '../types'
 import { PROVINCE_LIST } from '../constants/provinces'
 import { useDataFileStore } from '../store/dataFileStore'
 import { useT } from '../i18n'
@@ -72,6 +72,25 @@ export default function Settings() {
       <div className="grid gap-6 lg:grid-cols-2">
         {profile && (
           <Section title="个人与省份">
+            <p className="-mt-2 mb-1 text-xs text-emerald-600">{t('✓ 更改即时自动保存')}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <FormInput label="姓名" value={profile.name} onChange={(v) => updateProfile({ name: v })} />
+              <FormInput label="出生日期" type="date" value={profile.dateOfBirth} onChange={(v) => updateProfile({ dateOfBirth: v })} />
+            </div>
+            <FormInput label="居住城市" value={profile.city} onChange={(v) => updateProfile({ city: v })} />
+            <div>
+              <span className="label">{t('婚姻状态')}</span>
+              <select
+                className="input"
+                value={profile.maritalStatus}
+                onChange={(e) => updateProfile({ maritalStatus: e.target.value as Profile['maritalStatus'] })}
+              >
+                <option value="single">{t('单身')}</option>
+                <option value="married">{t('已婚')}</option>
+                <option value="divorced">{t('离异')}</option>
+                <option value="widowed">{t('丧偶')}</option>
+              </select>
+            </div>
             <div>
               <span className="label">{t('所在省份（影响省税与遗产认证费）')}</span>
               <select
@@ -90,6 +109,21 @@ export default function Settings() {
               value={profile.canadaArrivalYear ?? ''}
               onChange={(v) => updateProfile({ canadaArrivalYear: v ? Number(v) : undefined })}
             />
+            <div className="grid grid-cols-2 gap-3">
+              <FormInput
+                label="年工作收入"
+                type="number"
+                prefix="$"
+                value={profile.employmentIncomeAnnual ?? ''}
+                onChange={(v) => updateProfile({ employmentIncomeAnnual: v ? Number(v) : undefined })}
+              />
+              <FormInput
+                label="计划退休年龄"
+                type="number"
+                value={profile.retirementAge ?? ''}
+                onChange={(v) => updateProfile({ retirementAge: v ? Number(v) : undefined })}
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <FormInput
                 label="CPP 65岁预估月额"

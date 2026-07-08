@@ -78,6 +78,7 @@ export default function Projections() {
                 <th className="py-2 pr-4">{t('年龄')}</th>
                 <th className="py-2 pr-4">{t('总资产')}</th>
                 <th className="py-2 pr-4">TFSA</th>
+                <th className="py-2 pr-4">RRSP</th>
                 <th className="py-2 pr-4">{t('非注册')}</th>
                 <th className="py-2 pr-4">{t('现金收入')}</th>
                 <th className="py-2 pr-4">{t('支出')}</th>
@@ -94,6 +95,7 @@ export default function Projections() {
                   <td className="py-2 pr-4 font-medium">{t('{age}岁', { age: r.age })}</td>
                   <td className="py-2 pr-4">{formatCurrency(r.netWorth)}</td>
                   <td className="py-2 pr-4">{formatCurrency(r.tfsa)}</td>
+                  <td className="py-2 pr-4">{formatCurrency(r.rrsp)}</td>
                   <td className="py-2 pr-4">{formatCurrency(r.nonRegistered)}</td>
                   <td className="py-2 pr-4 text-emerald-600">{formatCurrency(r.cashIncome)}</td>
                   <td className="py-2 pr-4">{formatCurrency(r.expenses)}</td>

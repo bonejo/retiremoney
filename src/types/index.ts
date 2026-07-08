@@ -22,6 +22,10 @@ export interface Profile {
     monthlyAt65: number
     startAge: number
   }
+  // Still working: annual employment income and the age it stops (retires).
+  // Before retirement, income grows investments; from retirementAge it is $0.
+  employmentIncomeAnnual?: number
+  retirementAge?: number
   createdAt: string
   updatedAt: string
 }

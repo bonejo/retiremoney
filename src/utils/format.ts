@@ -16,6 +16,15 @@ export function formatWan(value: number): string {
   return `${wan.toFixed(wan >= 100 ? 0 : 1)}万`
 }
 
+// Language-aware compact axis label: Chinese uses 万; English uses $K/$M.
+export function formatAxis(value: number, lang: 'zh' | 'en'): string {
+  if (lang === 'zh') return formatWan(value)
+  const abs = Math.abs(value)
+  if (abs >= 1_000_000) return `$${(value / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`
+  if (abs >= 1000) return `$${Math.round(value / 1000)}K`
+  return `$${Math.round(value)}`
+}
+
 export function formatPercent(value: number, fractionDigits = 1): string {
   return `${(value * 100).toFixed(fractionDigits)}%`
 }

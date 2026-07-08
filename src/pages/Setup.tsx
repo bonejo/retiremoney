@@ -40,6 +40,8 @@ export default function Setup() {
   const [tfsaBalance, setTfsaBalance] = useState('')
   const [cppAt65, setCppAt65] = useState('')
   const [cppStartAge, setCppStartAge] = useState('65')
+  const [workIncome, setWorkIncome] = useState('')
+  const [retireAge, setRetireAge] = useState('65')
 
   const age = dob ? ageFromDOB(dob) : null
   const canProceed = name.trim() !== '' && dob !== '' && city.trim() !== ''
@@ -58,10 +60,12 @@ export default function Setup() {
       cpp: Number(cppAt65) > 0
         ? { monthlyAt65: Number(cppAt65), startAge: Number(cppStartAge) || 65 }
         : undefined,
+      employmentIncomeAnnual: Number(workIncome) > 0 ? Number(workIncome) : undefined,
+      retirementAge: Number(workIncome) > 0 ? Number(retireAge) || 65 : undefined,
     })
     if (Number(homeValue) > 0) {
       const p = emptyProperty()
-      p.name = '自住房'
+      p.name = t('自住房')
       p.type = 'primary_residence'
       p.currentValue = Number(homeValue)
       p.purchasePrice = Number(homeValue)
@@ -188,6 +192,14 @@ export default function Setup() {
               onChange={setTfsaBalance}
               placeholder="95000"
             />
+            <div className="rounded-lg bg-slate-50 p-3">
+              <div className="mb-2 text-sm font-medium text-slate-700">{t('在职收入（可选）')}</div>
+              <div className="grid grid-cols-2 gap-3">
+                <FormInput label="年工作收入" type="number" prefix="$" value={workIncome} onChange={setWorkIncome} placeholder="80000" />
+                <FormInput label="计划退休年龄" type="number" value={retireAge} onChange={setRetireAge} />
+              </div>
+              <p className="mt-1 text-xs text-slate-400">{t('退休前工作收入用于增长投资；到退休年龄后归零，转为从投资提取。')}</p>
+            </div>
             <div className="rounded-lg bg-slate-50 p-3">
               <div className="mb-2 text-sm font-medium text-slate-700">{t('CPP 养老金（可选）')}</div>
               <div className="grid grid-cols-2 gap-3">

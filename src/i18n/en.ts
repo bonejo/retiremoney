@@ -49,6 +49,11 @@ export const EN: Record<string, string> = {
   '自住房当前市值': 'Primary residence market value',
   'TFSA 余额': 'TFSA Balance',
   'CPP 养老金（可选）': 'CPP Pension (optional)',
+  '在职收入（可选）': 'Employment Income (optional)',
+  '年工作收入': 'Annual work income',
+  '计划退休年龄': 'Planned retirement age',
+  '退休前工作收入用于增长投资；到退休年龄后归零，转为从投资提取。':
+    'Work income grows your investments before retirement; at the retirement age it drops to $0 and you draw from investments.',
   '65岁预估月额': 'Est. monthly at 65',
   '见My Service Canada': 'See My Service Canada',
   '开始领取年龄 (60-70)': 'Start age (60–70)',
@@ -265,6 +270,12 @@ export const EN: Record<string, string> = {
 
   // Settings
   '个人与省份': 'Profile & Province',
+  '✓ 更改即时自动保存': '✓ Changes save automatically',
+  '(小数)': '(decimal)',
+  '自住公寓': 'e.g. Condo',
+  '成长ETF': 'e.g. Growth ETF',
+  '食品杂货': 'e.g. Groceries',
+  '还款金额': 'Repayment amount',
   '所在省份（影响省税与遗产认证费）': 'Province (affects provincial tax & probate)',
   'CPP 65岁预估月额': 'CPP est. monthly at 65',
   'CPP 开始年龄 (60-70)': 'CPP start age (60–70)',

@@ -12,6 +12,7 @@ export interface ProjectionPoint {
   age: number
   netWorth: number
   tfsa: number
+  rrsp: number
   nonRegistered: number
   propertyEquity: number
   totalDebt: number
@@ -41,6 +42,8 @@ export interface ProjectionParams {
   oasResidenceFraction?: number // partial OAS by immigration year
   cppMonthlyAdjusted?: number // CPP monthly at start age (already ±adjusted)
   cppStartAge?: number
+  employmentIncomeAnnual?: number // pre-retirement work income (today's dollars)
+  retirementAge?: number // age employment income stops
 }
 
 // Mutable per-account working state during the simulation.
@@ -197,6 +200,11 @@ export function buildProjection(
         params.cppMonthlyAdjusted && age >= (params.cppStartAge ?? 65)
           ? params.cppMonthlyAdjusted * 12 * Math.pow(1 + inf.governmentBenefits, i)
           : 0
+      // Employment income until the retirement age (grows with wage inflation).
+      const employmentIncome =
+        params.employmentIncomeAnnual && age < (params.retirementAge ?? 65)
+          ? params.employmentIncomeAnnual * Math.pow(1 + inf.living, i)
+          : 0
 
       // --- 4. Family-loan repayments (return of principal → cash) ---
       let loanRepay = 0
@@ -221,14 +229,14 @@ export function buildProjection(
           interest: interestIncome + ordinaryDividends,
           capitalGains: priorRealizedGains,
           helocInterest: helocDeduction(properties),
-          otherIncome: cppAnnual + priorOrdinaryWithdrawals,
+          otherIncome: cppAnnual + employmentIncome + priorOrdinaryWithdrawals,
         },
         assumptions,
         params.maritalStatus ?? 'single',
       )
       gisAnnual = gis.gisAnnual
 
-      cashIncome = rentalNet + oasAnnual + cppAnnual + gisAnnual + eligibleDividends + ordinaryDividends + interestIncome + loanRepay
+      cashIncome = rentalNet + oasAnnual + cppAnnual + employmentIncome + gisAnnual + eligibleDividends + ordinaryDividends + interestIncome + loanRepay
 
       // --- 6. Expenses (inflation-adjusted) + prior-year income tax ---
       const manualExpenses = expenses
@@ -280,7 +288,7 @@ export function buildProjection(
       const tax = computeIncomeTax(
         {
           ordinaryIncome:
-            rentalNet + interestIncome + ordinaryDividends + ordinaryFromWithdrawals + cppAnnual,
+            rentalNet + interestIncome + ordinaryDividends + ordinaryFromWithdrawals + cppAnnual + employmentIncome,
           eligibleDividends,
           capitalGains: realizedGains,
           oas: oasAnnual,
@@ -298,8 +306,9 @@ export function buildProjection(
 
     // --- Record end-of-year balance sheet ---
     const tfsa = invState.filter((s) => s.type === 'TFSA').reduce((sum, s) => sum + s.balance, 0)
+    const rrsp = invState.filter((s) => s.type === 'RRSP').reduce((sum, s) => sum + s.balance, 0)
     const nonRegistered = invState
-      .filter((s) => !s.familyLoan?.isFamilyLoan && s.type !== 'TFSA')
+      .filter((s) => !s.familyLoan?.isFamilyLoan && s.type !== 'TFSA' && s.type !== 'RRSP')
       .reduce((sum, s) => sum + s.balance, 0)
     const familyLoanBalance = invState
       .filter((s) => s.familyLoan?.isFamilyLoan)
@@ -310,8 +319,9 @@ export function buildProjection(
     points.push({
       year,
       age,
-      netWorth: tfsa + nonRegistered + familyLoanBalance + propertyEquity,
+      netWorth: tfsa + rrsp + nonRegistered + familyLoanBalance + propertyEquity,
       tfsa,
+      rrsp,
       nonRegistered,
       propertyEquity,
       totalDebt,

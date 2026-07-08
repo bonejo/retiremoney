@@ -9,8 +9,8 @@ import {
   Legend,
 } from 'recharts'
 import type { ProjectionPoint } from '../../utils/projectionCalc'
-import { formatCurrency, formatWan } from '../../utils/format'
-import { useT } from '../../i18n'
+import { formatCurrency, formatAxis } from '../../utils/format'
+import { useT, useLangStore } from '../../i18n'
 
 interface ProjectionChartProps {
   data: ProjectionPoint[]
@@ -22,6 +22,7 @@ const series = [
   { key: 'netWorth', name: '总净资产', color: '#2563eb', width: 3 },
   { key: 'propertyEquity', name: '房产净值', color: '#f59e0b', width: 1.5 },
   { key: 'tfsa', name: 'TFSA', color: '#10b981', width: 1.5 },
+  { key: 'rrsp', name: 'RRSP', color: '#0ea5e9', width: 1.5 },
   { key: 'nonRegistered', name: '非注册投资', color: '#8b5cf6', width: 1.5 },
 ] as const
 
@@ -31,17 +32,18 @@ export default function ProjectionChart({
   showDebt = false,
 }: ProjectionChartProps) {
   const t = useT()
+  const lang = useLangStore((s) => s.lang)
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 10, right: 16, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
           dataKey="age"
-          tickFormatter={(a) => t('{age}岁', { age: a })}
+          tickFormatter={(a) => (lang === 'zh' ? `${a}岁` : `${a}`)}
           tick={{ fontSize: 12, fill: '#64748b' }}
         />
         <YAxis
-          tickFormatter={formatWan}
+          tickFormatter={(v) => formatAxis(v, lang)}
           tick={{ fontSize: 12, fill: '#64748b' }}
           width={56}
         />

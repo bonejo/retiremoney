@@ -46,6 +46,8 @@ export function useProjection(overrides: Overrides = {}): {
       // cppMonthly at the start age itself gives the adjusted amount.
       cppMonthlyAdjusted: profile ? cppMonthly(profile, Math.max(currentAge, cppStartAge)) : 0,
       cppStartAge,
+      employmentIncomeAnnual: profile?.employmentIncomeAnnual,
+      retirementAge: profile?.retirementAge,
     })
   }, [
     properties,
