@@ -10,7 +10,7 @@ import {
 } from 'recharts'
 import type { ProjectionPoint } from '../../utils/projectionCalc'
 import { formatCurrency, formatAxis } from '../../utils/format'
-import { useT, useLangStore } from '../../i18n'
+import { useT } from '../../i18n'
 
 interface ProjectionChartProps {
   data: ProjectionPoint[]
@@ -19,11 +19,11 @@ interface ProjectionChartProps {
 }
 
 const series = [
-  { key: 'netWorth', name: '总净资产', color: '#2563eb', width: 3 },
-  { key: 'propertyEquity', name: '房产净值', color: '#f59e0b', width: 1.5 },
+  { key: 'netWorth', name: 'Total Net Worth', color: '#2563eb', width: 3 },
+  { key: 'propertyEquity', name: 'Home equity', color: '#f59e0b', width: 1.5 },
   { key: 'tfsa', name: 'TFSA', color: '#10b981', width: 1.5 },
   { key: 'rrsp', name: 'RRSP', color: '#0ea5e9', width: 1.5 },
-  { key: 'nonRegistered', name: '非注册投资', color: '#8b5cf6', width: 1.5 },
+  { key: 'nonRegistered', name: 'Non-registered', color: '#8b5cf6', width: 1.5 },
 ] as const
 
 export default function ProjectionChart({
@@ -32,24 +32,23 @@ export default function ProjectionChart({
   showDebt = false,
 }: ProjectionChartProps) {
   const t = useT()
-  const lang = useLangStore((s) => s.lang)
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 10, right: 16, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
           dataKey="age"
-          tickFormatter={(a) => (lang === 'zh' ? `${a}岁` : `${a}`)}
+          tickFormatter={(a) => `${a}`}
           tick={{ fontSize: 12, fill: '#64748b' }}
         />
         <YAxis
-          tickFormatter={(v) => formatAxis(v, lang)}
+          tickFormatter={(v) => formatAxis(v)}
           tick={{ fontSize: 12, fill: '#64748b' }}
           width={56}
         />
         <Tooltip
           formatter={(value: number) => formatCurrency(value)}
-          labelFormatter={(age) => t('{age}岁', { age: String(age) })}
+          labelFormatter={(age) => t('Age {age}', { age: String(age) })}
           contentStyle={{ fontSize: 13, borderRadius: 8 }}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -68,7 +67,7 @@ export default function ProjectionChart({
           <Line
             type="monotone"
             dataKey="totalDebt"
-            name={t('总负债')}
+            name={t('Total debt')}
             stroke="#ef4444"
             strokeWidth={1.5}
             dot={false}

@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import { useProfileStore } from '../store/profileStore'
 import { useDataFileStore } from '../store/dataFileStore'
 import { useT } from '../i18n'
-import LangToggle from '../components/common/LangToggle'
 
 export default function Welcome() {
   const navigate = useNavigate()
@@ -14,16 +13,10 @@ export default function Welcome() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-brand-50 to-slate-50 px-6">
       <div className="w-full max-w-md text-center">
-        <div className="mb-6">
-          <div className="mb-1.5 text-xs font-medium text-slate-400">🌐 选择语言 / Choose Language</div>
-          <div className="flex justify-center">
-            <LangToggle />
-          </div>
-        </div>
         <div className="mb-2 text-5xl">🌇</div>
-        <h1 className="text-3xl font-bold text-slate-900">{t('退休财务规划')}</h1>
+        <h1 className="text-3xl font-bold text-slate-900">{t('Retirement Planner')}</h1>
         <p className="mt-2 text-slate-500">
-          {t('为加拿大退休人士打造的房产、投资、支出与政府福利规划工具')}
+          {t('Property, investment, expense and government-benefit planning for Canadian retirees')}
         </p>
 
         <div className="mt-8 space-y-3">
@@ -31,14 +24,14 @@ export default function Welcome() {
             className="btn-primary w-full py-3 text-base"
             onClick={() => navigate('/setup')}
           >
-            {t('新建我的财务档案')}
+            {t('Create My Financial Profile')}
           </button>
           {hasProfile && (
             <button
               className="btn-secondary w-full py-3 text-base"
               onClick={() => navigate('/dashboard')}
             >
-              {t('继续上次')}
+              {t('Continue')}
             </button>
           )}
           {fileSupported && (
@@ -46,13 +39,13 @@ export default function Welcome() {
               className="btn-secondary w-full py-3 text-base"
               onClick={() => void openExisting()}
             >
-              {t('从数据文件打开')}
+              {t('Open From Data File')}
             </button>
           )}
         </div>
 
         <p className="mt-8 text-xs text-slate-400">
-          {t('所有数据保存在本地设备，不上传到任何服务器。')}
+          {t('All data is stored locally on your device — nothing is uploaded to any server.')}
         </p>
       </div>
     </div>

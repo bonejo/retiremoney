@@ -34,8 +34,8 @@ export default function Properties() {
 
   return (
     <Page
-      title="房产管理"
-      action={<button className="btn-primary" onClick={openNew}>{t('+ 添加房产')}</button>}
+      title="Properties"
+      action={<button className="btn-primary" onClick={openNew}>{t('+ Add Property')}</button>}
     >
       {properties.length > 1 && (() => {
         const totals = properties.map((p) =>
@@ -47,14 +47,14 @@ export default function Properties() {
         return (
           <div className="card mb-4 flex flex-wrap items-center justify-between gap-3 p-4">
             <div>
-              <span className="text-sm text-slate-500">{t('全部房产年度收支合计')}</span>
+              <span className="text-sm text-slate-500">{t('All properties — annual balance')}</span>
               <div className={`text-2xl font-semibold ${net >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                {net < 0 ? '−' : '+'}{formatCurrency(Math.abs(net))}{t('/年')}
+                {net < 0 ? '−' : '+'}{formatCurrency(Math.abs(net))}{t('/yr')}
               </div>
             </div>
             <div className="text-right text-sm text-slate-500">
-              <div>{t('租金收入')} <span className="font-medium text-emerald-600">+{formatCurrency(income)}</span></div>
-              <div>{t('持有成本')} <span className="font-medium text-rose-500">−{formatCurrency(outgo)}</span></div>
+              <div>{t('Rental income')} <span className="font-medium text-emerald-600">+{formatCurrency(income)}</span></div>
+              <div>{t('Carrying costs')} <span className="font-medium text-rose-500">−{formatCurrency(outgo)}</span></div>
             </div>
           </div>
         )
@@ -62,7 +62,7 @@ export default function Properties() {
 
       {properties.length === 0 ? (
         <div className="card p-10 text-center text-slate-400">
-          {t('还没有房产。点击右上角「添加房产」开始。')}
+          {t('No properties yet. Click "Add Property" to start.')}
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -75,62 +75,62 @@ export default function Properties() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold">{p.name || t('未命名')}</h3>
+                      <h3 className="text-lg font-semibold">{p.name || t('Unnamed')}</h3>
                       <Badge color={p.type === 'primary_residence' ? 'blue' : 'green'}>
                         {t(PROPERTY_TYPE_LABELS[p.type])}
                       </Badge>
                     </div>
                     <div className="mt-1 text-sm text-slate-400">
-                      {t('购于 {y} · ACB {n}', { y: p.purchaseYear, n: formatCurrency(p.purchasePrice) })}
+                      {t('Bought {y} · ACB {n}', { y: p.purchaseYear, n: formatCurrency(p.purchasePrice) })}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-semibold">{formatCurrency(p.currentValue)}</div>
-                    <div className="text-xs text-slate-400">{t('净值 {n}', { n: formatCurrency(propertyEquity(p)) })}</div>
+                    <div className="text-xs text-slate-400">{t('Equity {n}', { n: formatCurrency(propertyEquity(p)) })}</div>
                   </div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                  <Stat label={t('年地税')} value={formatCurrency(computePropertyTax(p))} />
+                  <Stat label={t('Property tax /yr')} value={formatCurrency(computePropertyTax(p))} />
                   {p.mortgage?.hasMortgage && (
-                    <Stat label={t('月供')} value={formatCurrency(p.mortgage.monthlyPayment)} />
+                    <Stat label={t('Mortgage /mo')} value={formatCurrency(p.mortgage.monthlyPayment)} />
                   )}
                   {rental.netAnnualRent > 0 && (
-                    <Stat label={t('年净租金')} value={formatCurrency(rental.netAnnualRent)} accent />
+                    <Stat label={t('Net rent /yr')} value={formatCurrency(rental.netAnnualRent)} accent />
                   )}
                   {p.strataFee != null && (
-                    <Stat label={t('月物业费')} value={formatCurrency(p.strataFee)} />
+                    <Stat label={t('Strata /mo')} value={formatCurrency(p.strataFee)} />
                   )}
                 </div>
 
                 <div className="mt-4 rounded-lg border border-slate-200 p-3">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium text-slate-700">{t('年度收支平衡')}</span>
+                    <span className="text-sm font-medium text-slate-700">{t('Annual Balance')}</span>
                     <span className={`text-sm font-semibold ${balance.net >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                      {balance.net < 0 ? '−' : ''}{formatCurrency(Math.abs(balance.net))}{t('/年')}
+                      {balance.net < 0 ? '−' : ''}{formatCurrency(Math.abs(balance.net))}{t('/yr')}
                     </span>
                   </div>
                   <div className="space-y-0.5 text-xs text-slate-500">
-                    {balance.rentalIncome > 0 && <BalRow label={t('租金收入')} value={balance.rentalIncome} />}
-                    {balance.mortgagePayment > 0 && <BalRow label={t('Mortgage月供')} value={-balance.mortgagePayment} />}
-                    {balance.locInterest > 0 && <BalRow label={t('LOC利息')} value={-balance.locInterest} />}
-                    <BalRow label={t('地税')} value={-balance.propertyTax} />
-                    {balance.strata > 0 && <BalRow label={t('物业费')} value={-balance.strata} />}
-                    {balance.insurance > 0 && <BalRow label={t('保险')} value={-balance.insurance} />}
-                    {balance.managementFee > 0 && <BalRow label={t('管理费')} value={-balance.managementFee} />}
+                    {balance.rentalIncome > 0 && <BalRow label={t('Rental income')} value={balance.rentalIncome} />}
+                    {balance.mortgagePayment > 0 && <BalRow label={t('Mortgage payments')} value={-balance.mortgagePayment} />}
+                    {balance.locInterest > 0 && <BalRow label={t('LOC interest')} value={-balance.locInterest} />}
+                    <BalRow label={t('Property tax')} value={-balance.propertyTax} />
+                    {balance.strata > 0 && <BalRow label={t('Strata')} value={-balance.strata} />}
+                    {balance.insurance > 0 && <BalRow label={t('Insurance')} value={-balance.insurance} />}
+                    {balance.managementFee > 0 && <BalRow label={t('Management fee')} value={-balance.managementFee} />}
                     {balance.assignedExpenses > 0 && (
-                      <BalRow label={t('归属支出 ({n}项)', { n: assigned.length })} value={-balance.assignedExpenses} />
+                      <BalRow label={t('Assigned expenses ({n})', { n: assigned.length })} value={-balance.assignedExpenses} />
                     )}
                   </div>
                 </div>
 
                 <div className="mt-4 flex gap-2">
-                  <button className="btn-secondary flex-1" onClick={() => openEdit(p)}>{t('编辑')}</button>
+                  <button className="btn-secondary flex-1" onClick={() => openEdit(p)}>{t('Edit')}</button>
                   <button
                     className="btn-ghost text-rose-500"
-                    onClick={() => confirm(t('确定删除该房产？')) && removeProperty(p.id)}
+                    onClick={() => confirm(t('Delete this property?')) && removeProperty(p.id)}
                   >
-                    {t('删除')}
+                    {t('Delete')}
                   </button>
                 </div>
               </div>
@@ -142,7 +142,7 @@ export default function Properties() {
       <Drawer
         open={editing !== null}
         onClose={() => setEditing(null)}
-        title={isNew ? t('添加房产') : t('编辑房产')}
+        title={isNew ? t('Add Property') : t('Edit Property')}
       >
         {editing && (
           <PropertyForm initial={editing} onSave={save} onCancel={() => setEditing(null)} />

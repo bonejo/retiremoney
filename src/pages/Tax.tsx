@@ -19,13 +19,13 @@ export default function Tax() {
 
   const grossUp = assumptions.taxRates.dividendGrossUpFactor
   const incomeRows = [
-    { label: t('租金收入 (T776)'), value: derived.netRentalAnnual },
-    { label: t('CPP 养老金'), value: derived.cppAnnual },
-    { label: t('合格股息 (×{n} grossed-up)', { n: grossUp }), value: tax.grossedUpDividends },
-    { label: t('利息收入'), value: derived.interest },
-    { label: t('OAS (已领取)'), value: derived.oasAnnual },
-    { label: t('已实现资本利得（提取投资，50%计入）'), value: plan.totalRealizedGain * 0.5 },
-    { label: t('RRSP 取款（全额计入）'), value: plan.totalOrdinaryIncome },
+    { label: t('Rental income (T776)'), value: derived.netRentalAnnual },
+    { label: t('CPP pension'), value: derived.cppAnnual },
+    { label: t('Eligible dividends (×{n} grossed-up)', { n: grossUp }), value: tax.grossedUpDividends },
+    { label: t('Interest income'), value: derived.interest },
+    { label: t('OAS (received)'), value: derived.oasAnnual },
+    { label: t('Realized capital gains (withdrawals, 50% counted)'), value: plan.totalRealizedGain * 0.5 },
+    { label: t('RRSP withdrawals (100% counted)'), value: plan.totalOrdinaryIncome },
   ].filter((r) => r.value > 0)
 
   const totalIncome = incomeRows.reduce((s, r) => s + r.value, 0)
@@ -33,16 +33,16 @@ export default function Tax() {
   const annualPropertyTax = properties.reduce((s, p) => s + computePropertyTax(p), 0)
 
   return (
-    <Page title="税务摘要">
+    <Page title="Tax Summary">
       <p className="mb-4 text-sm text-slate-500">
-        {t('联邦 + 省级分档累进税，含股息 grossed-up、DTC 抵免与资本利得 50% 计入。')}
-        {t('已包含为补足月现金流缺口而提取投资所实现的被动收入')}
-        {plan.totalWithdrawal > 0 && t('（本年预计提取 {n}）', { n: formatCurrency(plan.totalWithdrawal) })}。
+        {t('Federal + provincial progressive brackets, with dividend gross-up, DTC credit and 50% capital-gains inclusion.')}
+        {t('Includes passive income realized by withdrawals that fund the monthly cash-flow gap')}
+        {plan.totalWithdrawal > 0 && t(' (est. withdrawals this year: {n})', { n: formatCurrency(plan.totalWithdrawal) })}。
       </p>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="card p-5">
-          <h3 className="mb-3 font-semibold">{t('收入汇总')}</h3>
+          <h3 className="mb-3 font-semibold">{t('Income')}</h3>
           {incomeRows.map((r) => (
             <div key={r.label} className="flex justify-between py-1.5 text-sm">
               <span className="text-slate-600">{r.label}</span>
@@ -50,37 +50,37 @@ export default function Tax() {
             </div>
           ))}
           <div className="mt-2 flex justify-between border-t border-slate-100 pt-2 text-sm font-semibold">
-            <span>{t('收入合计')}</span>
+            <span>{t('Total income')}</span>
             <span>{formatCurrency(totalIncome)}</span>
           </div>
         </div>
 
         <div className="card p-5">
-          <h3 className="mb-3 font-semibold">{t('抵扣、税额与抵免')}</h3>
+          <h3 className="mb-3 font-semibold">{t('Deductions, Tax & Credits')}</h3>
           <div className="flex justify-between py-1.5 text-sm">
-            <span className="text-slate-600">{t('投资利息 (Line 22100)')}</span>
+            <span className="text-slate-600">{t('Investment interest (Line 22100)')}</span>
             <span className="font-medium text-emerald-600">−{formatCurrency(deductions)}</span>
           </div>
           <div className="flex justify-between py-1.5 text-sm">
-            <span className="text-slate-600">{t('应税收入')}</span>
+            <span className="text-slate-600">{t('Taxable income')}</span>
             <span className="font-medium">{formatCurrency(tax.taxableIncome)}</span>
           </div>
           <div className="flex justify-between py-1.5 text-sm">
-            <span className="text-slate-600">{t('联邦税')}</span>
+            <span className="text-slate-600">{t('Federal tax')}</span>
             <span className="font-medium">{formatCurrency(tax.federalTax)}</span>
           </div>
           <div className="flex justify-between py-1.5 text-sm">
-            <span className="text-slate-600">{t('省税（{p}）', { p: province })}</span>
+            <span className="text-slate-600">{t('Provincial tax ({p})', { p: province })}</span>
             <span className="font-medium">{formatCurrency(tax.provincialTax)}</span>
           </div>
           <div className="flex justify-between py-1.5 text-sm">
-            <span className="text-slate-600">{t('股息税收抵免 (DTC)')}</span>
+            <span className="text-slate-600">{t('Dividend tax credit (DTC)')}</span>
             <span className="font-medium text-emerald-600">−{formatCurrency(tax.dtcCredit)}</span>
           </div>
           <div className="mt-4 rounded-lg bg-slate-50 p-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500">{t('净应缴所得税')}</span>
-              <span className="text-xs text-slate-400">{t('有效税率 {n}', { n: formatPercent(tax.averageRate) })}</span>
+              <span className="text-xs text-slate-500">{t('Net income tax payable')}</span>
+              <span className="text-xs text-slate-400">{t('effective rate {n}', { n: formatPercent(tax.averageRate) })}</span>
             </div>
             <div className="text-2xl font-semibold">{formatCurrency(tax.totalTax)}</div>
           </div>
@@ -88,19 +88,19 @@ export default function Tax() {
       </div>
 
       <div className="card mt-6 p-5">
-        <h3 className="mb-3 font-semibold">{t('地税汇总')}</h3>
+        <h3 className="mb-3 font-semibold">{t('Property Tax')}</h3>
         {properties.length === 0 ? (
-          <p className="text-slate-400">{t('暂无房产。')}</p>
+          <p className="text-slate-400">{t('No properties yet.')}</p>
         ) : (
           <div className="divide-y divide-slate-100">
             {properties.map((p) => (
               <div key={p.id} className="flex justify-between py-2 text-sm">
                 <span className="text-slate-600">{p.name}</span>
-                <span className="font-medium">{formatCurrency(computePropertyTax(p))}{t('/年')}</span>
+                <span className="font-medium">{formatCurrency(computePropertyTax(p))}{t('/yr')}</span>
               </div>
             ))}
             <div className="flex justify-between py-2 text-sm font-semibold">
-              <span>{t('年地税合计')}</span>
+              <span>{t('Total property tax /yr')}</span>
               <span>{formatCurrency(annualPropertyTax)}</span>
             </div>
           </div>

@@ -18,10 +18,10 @@ const categories: ExpenseCategory[] = [
 ]
 
 const freqLabels: Record<ExpenseFrequency, string> = {
-  monthly: '每月',
-  quarterly: '每季',
-  annual: '每年',
-  one_time: '一次性',
+  monthly: 'monthly',
+  quarterly: 'quarterly',
+  annual: 'annual',
+  one_time: 'one-time',
 }
 
 export default function Expenses() {
@@ -34,11 +34,11 @@ export default function Expenses() {
   // Property-derived expenses are read-only (imported from the property module).
   const propertyExpenses = properties.flatMap((p) => {
     const rows: { label: string; monthly: number }[] = []
-    if (p.mortgage?.hasMortgage) rows.push({ label: `${p.name} · ${t('月供')}`, monthly: p.mortgage.monthlyPayment })
+    if (p.mortgage?.hasMortgage) rows.push({ label: `${p.name} · ${t('Mortgage /mo')}`, monthly: p.mortgage.monthlyPayment })
     const tax = computePropertyTax(p)
-    if (tax > 0) rows.push({ label: `${p.name} · ${t('地税(月均)')}`, monthly: tax / 12 })
-    if (p.strataFee) rows.push({ label: `${p.name} · ${t('物业费')}`, monthly: p.strataFee })
-    if (p.insurance) rows.push({ label: `${p.name} · ${t('保险(月均)')}`, monthly: p.insurance / 12 })
+    if (tax > 0) rows.push({ label: `${p.name} · ${t('property tax (monthly avg)')}`, monthly: tax / 12 })
+    if (p.strataFee) rows.push({ label: `${p.name} · ${t('Strata')}`, monthly: p.strataFee })
+    if (p.insurance) rows.push({ label: `${p.name} · ${t('insurance (monthly avg)')}`, monthly: p.insurance / 12 })
     return rows
   })
 
@@ -54,32 +54,32 @@ export default function Expenses() {
 
   return (
     <Page
-      title="支出管理"
-      action={<button className="btn-primary" onClick={() => { setEditing(emptyExpense()); setIsNew(true) }}>{t('+ 添加支出')}</button>}
+      title="Expenses"
+      action={<button className="btn-primary" onClick={() => { setEditing(emptyExpense()); setIsNew(true) }}>{t('+ Add Expense')}</button>}
     >
       <div className="mb-4 grid gap-4 sm:grid-cols-3">
         <div className="card p-4">
-          <div className="text-sm text-slate-500">{t('月总固定支出')}</div>
+          <div className="text-sm text-slate-500">{t('Total monthly expenses')}</div>
           <div className="text-2xl font-semibold">{formatCurrency(grandTotal)}</div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-slate-500">{t('房产相关(自动)')}</div>
+          <div className="text-sm text-slate-500">{t('Property-related (auto)')}</div>
           <div className="text-2xl font-semibold text-slate-700">{formatCurrency(propertyMonthly)}</div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-slate-500">{t('年总支出')}</div>
+          <div className="text-sm text-slate-500">{t('Total annual expenses')}</div>
           <div className="text-2xl font-semibold">{formatCurrency(grandTotal * 12)}</div>
         </div>
       </div>
 
       {propertyExpenses.length > 0 && (
         <div className="card mb-4 p-5">
-          <h3 className="mb-3 font-semibold">🏠 {t('房产相关（自动导入，不可编辑）')}</h3>
+          <h3 className="mb-3 font-semibold">🏠 {t('Property-Related (auto-imported, read-only)')}</h3>
           <div className="divide-y divide-slate-100">
             {propertyExpenses.map((r, i) => (
               <div key={i} className="flex items-center justify-between py-2 text-sm">
                 <span className="text-slate-600">{r.label}</span>
-                <span className="font-medium">{formatCurrency(r.monthly)}{t('/月')}</span>
+                <span className="font-medium">{formatCurrency(r.monthly)}{t('/mo')}</span>
               </div>
             ))}
           </div>
@@ -87,9 +87,9 @@ export default function Expenses() {
       )}
 
       <div className="card p-5">
-        <h3 className="mb-3 font-semibold">📝 {t('其他支出')}</h3>
+        <h3 className="mb-3 font-semibold">📝 {t('Other Expenses')}</h3>
         {expenses.length === 0 ? (
-          <p className="py-6 text-center text-slate-400">{t('还没有手动添加的支出。')}</p>
+          <p className="py-6 text-center text-slate-400">{t('No manual expenses yet.')}</p>
         ) : (
           <div className="divide-y divide-slate-100">
             {expenses.map((e) => (
@@ -98,17 +98,17 @@ export default function Expenses() {
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{e.name}</span>
                     <Badge color="gray">{t(EXPENSE_CATEGORY_LABELS[e.category])}</Badge>
-                    {e.inflationLinked && <Badge color="blue">{t('通胀调整')}</Badge>}
+                    {e.inflationLinked && <Badge color="blue">{t('inflation-linked')}</Badge>}
                   </div>
                   <div className="text-xs text-slate-400">
                     {formatCurrency(e.amount)} · {t(freqLabels[e.frequency])}
-                    {e.frequency !== 'monthly' && e.frequency !== 'one_time' && ` (≈${formatCurrency(monthlyAmount(e))}${t('/月')})`}
+                    {e.frequency !== 'monthly' && e.frequency !== 'one_time' && ` (≈${formatCurrency(monthlyAmount(e))}${t('/mo')})`}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-medium">{formatCurrency(monthlyAmount(e))}{t('/月')}</span>
-                  <button className="text-sm text-brand-600" onClick={() => { setEditing(e); setIsNew(false) }}>{t('编辑')}</button>
-                  <button className="text-sm text-rose-500" onClick={() => removeExpense(e.id)}>{t('删除')}</button>
+                  <span className="font-medium">{formatCurrency(monthlyAmount(e))}{t('/mo')}</span>
+                  <button className="text-sm text-brand-600" onClick={() => { setEditing(e); setIsNew(false) }}>{t('Edit')}</button>
+                  <button className="text-sm text-rose-500" onClick={() => removeExpense(e.id)}>{t('Delete')}</button>
                 </div>
               </div>
             ))}
@@ -116,7 +116,7 @@ export default function Expenses() {
         )}
       </div>
 
-      <Drawer open={editing !== null} onClose={() => setEditing(null)} title={isNew ? t('添加支出') : t('编辑支出')}>
+      <Drawer open={editing !== null} onClose={() => setEditing(null)} title={isNew ? t('Add Expense') : t('Edit Expense')}>
         {editing && (
           <ExpenseForm
             initial={editing}
@@ -152,9 +152,9 @@ function ExpenseForm({
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-4">
-        <FormInput label="支出名称" value={e.name} onChange={(v) => set({ name: v })} placeholder="食品杂货" />
+        <FormInput label="Expense name" value={e.name} onChange={(v) => set({ name: v })} placeholder="e.g. Groceries" />
         <div>
-          <span className="label">{t('分类')}</span>
+          <span className="label">{t('Category')}</span>
           <select className="input" value={e.category} onChange={(ev) => set({ category: ev.target.value as ExpenseCategory })}>
             {categories.map((c) => (
               <option key={c} value={c}>{t(EXPENSE_CATEGORY_LABELS[c])}</option>
@@ -162,9 +162,9 @@ function ExpenseForm({
           </select>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <FormInput label="金额" type="number" prefix="$" value={e.amount || ''} onChange={(v) => set({ amount: num(v) })} />
+          <FormInput label="Amount" type="number" prefix="$" value={e.amount || ''} onChange={(v) => set({ amount: num(v) })} />
           <div>
-            <span className="label">{t('频率')}</span>
+            <span className="label">{t('Frequency')}</span>
             <select className="input" value={e.frequency} onChange={(ev) => set({ frequency: ev.target.value as ExpenseFrequency })}>
               {(Object.keys(freqLabels) as ExpenseFrequency[]).map((f) => (
                 <option key={f} value={f}>{t(freqLabels[f])}</option>
@@ -174,33 +174,33 @@ function ExpenseForm({
         </div>
         {properties.length > 0 && (
           <div>
-            <span className="label">{t('归属房产（可选）')}</span>
+            <span className="label">{t('Assign to property (optional)')}</span>
             <select
               className="input"
               value={e.propertyId ?? ''}
               onChange={(ev) => set({ propertyId: ev.target.value || undefined })}
             >
-              <option value="">{t('不归属任何房产')}</option>
+              <option value="">{t('Not assigned to a property')}</option>
               {properties.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-slate-400">{t('归属后可在房产页看到该房产的年度收支平衡。')}</p>
+            <p className="mt-1 text-xs text-slate-400">Assigned expenses appear in that property's annual balance.</p>
           </div>
         )}
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={e.inflationLinked} onChange={(ev) => set({ inflationLinked: ev.target.checked })} />
-          {t('跟随通胀增长')}
+          {t('Grows with inflation')}
         </label>
         <div className="grid grid-cols-2 gap-3">
-          <FormInput label="开始年龄(可选)" type="number" value={e.startAge ?? ''} onChange={(v) => set({ startAge: v === '' ? undefined : num(v) })} />
-          <FormInput label="结束年龄(可选)" type="number" value={e.endAge ?? ''} onChange={(v) => set({ endAge: v === '' ? undefined : num(v) })} />
+          <FormInput label="Start age (optional)" type="number" value={e.startAge ?? ''} onChange={(v) => set({ startAge: v === '' ? undefined : num(v) })} />
+          <FormInput label="End age (optional)" type="number" value={e.endAge ?? ''} onChange={(v) => set({ endAge: v === '' ? undefined : num(v) })} />
         </div>
-        <FormInput label="备注" value={e.notes ?? ''} onChange={(v) => set({ notes: v })} />
+        <FormInput label="Notes" value={e.notes ?? ''} onChange={(v) => set({ notes: v })} />
       </div>
       <div className="mt-4 flex justify-end gap-2 border-t border-slate-200 pt-4">
-        <button className="btn-secondary" onClick={onCancel}>{t('取消')}</button>
-        <button className="btn-primary" onClick={() => onSave(e)} disabled={!e.name.trim()}>{t('保存')}</button>
+        <button className="btn-secondary" onClick={onCancel}>{t('Cancel')}</button>
+        <button className="btn-primary" onClick={() => onSave(e)} disabled={!e.name.trim()}>{t('Save')}</button>
       </div>
     </div>
   )

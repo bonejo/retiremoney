@@ -55,44 +55,44 @@ export default function Settings() {
         }
         location.reload()
       } catch {
-        alert('导入失败：文件格式无效')
+        alert('Import failed: invalid file format')
       }
     }
     reader.readAsText(file)
   }
 
   function clearAll() {
-    if (!confirm('确定清除所有数据？此操作不可恢复。')) return
+    if (!confirm('Clear all data? This cannot be undone.')) return
     for (const k of STORAGE_KEYS) localStorage.removeItem(k)
     location.href = '/'
   }
 
   return (
-    <Page title="全局设置">
+    <Page title="Settings">
       <div className="grid gap-6 lg:grid-cols-2">
         {profile && (
-          <Section title="个人与省份">
-            <p className="-mt-2 mb-1 text-xs text-emerald-600">{t('✓ 更改即时自动保存')}</p>
+          <Section title="Profile & Province">
+            <p className="-mt-2 mb-1 text-xs text-emerald-600">{t('✓ Changes save automatically')}</p>
             <div className="grid grid-cols-2 gap-3">
-              <FormInput label="姓名" value={profile.name} onChange={(v) => updateProfile({ name: v })} />
-              <FormInput label="出生日期" type="date" value={profile.dateOfBirth} onChange={(v) => updateProfile({ dateOfBirth: v })} />
+              <FormInput label="Name" value={profile.name} onChange={(v) => updateProfile({ name: v })} />
+              <FormInput label="Date of Birth" type="date" value={profile.dateOfBirth} onChange={(v) => updateProfile({ dateOfBirth: v })} />
             </div>
-            <FormInput label="居住城市" value={profile.city} onChange={(v) => updateProfile({ city: v })} />
+            <FormInput label="City" value={profile.city} onChange={(v) => updateProfile({ city: v })} />
             <div>
-              <span className="label">{t('婚姻状态')}</span>
+              <span className="label">{t('Marital Status')}</span>
               <select
                 className="input"
                 value={profile.maritalStatus}
                 onChange={(e) => updateProfile({ maritalStatus: e.target.value as Profile['maritalStatus'] })}
               >
-                <option value="single">{t('单身')}</option>
-                <option value="married">{t('已婚')}</option>
-                <option value="divorced">{t('离异')}</option>
-                <option value="widowed">{t('丧偶')}</option>
+                <option value="single">{t('Single')}</option>
+                <option value="married">{t('Married')}</option>
+                <option value="divorced">{t('Divorced')}</option>
+                <option value="widowed">{t('Widowed')}</option>
               </select>
             </div>
             <div>
-              <span className="label">{t('所在省份（影响省税与遗产认证费）')}</span>
+              <span className="label">{t('Province (affects provincial tax & probate)')}</span>
               <select
                 className="input"
                 value={profile.province}
@@ -104,21 +104,21 @@ export default function Settings() {
               </select>
             </div>
             <FormInput
-              label="移民来加年份（出生在加拿大请留空）"
+              label="Year you immigrated to Canada (leave blank if born in Canada)"
               type="number"
               value={profile.canadaArrivalYear ?? ''}
               onChange={(v) => updateProfile({ canadaArrivalYear: v ? Number(v) : undefined })}
             />
             <div className="grid grid-cols-2 gap-3">
               <FormInput
-                label="年工作收入"
+                label="Annual work income"
                 type="number"
                 prefix="$"
                 value={profile.employmentIncomeAnnual ?? ''}
                 onChange={(v) => updateProfile({ employmentIncomeAnnual: v ? Number(v) : undefined })}
               />
               <FormInput
-                label="计划退休年龄"
+                label="Planned retirement age"
                 type="number"
                 value={profile.retirementAge ?? ''}
                 onChange={(v) => updateProfile({ retirementAge: v ? Number(v) : undefined })}
@@ -126,7 +126,7 @@ export default function Settings() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <FormInput
-                label="CPP 65岁预估月额"
+                label="CPP est. monthly at 65"
                 type="number"
                 prefix="$"
                 value={profile.cpp?.monthlyAt65 ?? ''}
@@ -139,7 +139,7 @@ export default function Settings() {
                 }
               />
               <FormInput
-                label="CPP 开始年龄 (60-70)"
+                label="CPP start age (60–70)"
                 type="number"
                 value={profile.cpp?.startAge ?? 65}
                 onChange={(v) =>
@@ -151,51 +151,51 @@ export default function Settings() {
           </Section>
         )}
 
-        <Section title="通胀设置">
-          <PercentRow label="生活费通胀率" value={assumptions.inflationRates.living} onChange={(v) => setInflation('living', v)} />
-          <PercentRow label="房产/地税通胀率" value={assumptions.inflationRates.property} onChange={(v) => setInflation('property', v)} />
-          <PercentRow label="医疗费通胀率" value={assumptions.inflationRates.healthcare} onChange={(v) => setInflation('healthcare', v)} />
-          <PercentRow label="政府福利增长率" value={assumptions.inflationRates.governmentBenefits} onChange={(v) => setInflation('governmentBenefits', v)} />
+        <Section title="Inflation">
+          <PercentRow label="Living-cost inflation" value={assumptions.inflationRates.living} onChange={(v) => setInflation('living', v)} />
+          <PercentRow label="Property/tax inflation" value={assumptions.inflationRates.property} onChange={(v) => setInflation('property', v)} />
+          <PercentRow label="Healthcare inflation" value={assumptions.inflationRates.healthcare} onChange={(v) => setInflation('healthcare', v)} />
+          <PercentRow label="Benefit growth rate" value={assumptions.inflationRates.governmentBenefits} onChange={(v) => setInflation('governmentBenefits', v)} />
         </Section>
 
-        <Section title="税率设置">
-          <PercentRow label="边际税率" value={assumptions.taxRates.marginalTaxRate} onChange={(v) => setTax('marginalTaxRate', v)} />
-          <PercentRow label="资本利得有效税率" value={assumptions.taxRates.capitalGainsTaxRate} onChange={(v) => setTax('capitalGainsTaxRate', v)} />
-          <PercentRow label="DTC 抵免率" value={assumptions.taxRates.dtcRate} onChange={(v) => setTax('dtcRate', v)} />
+        <Section title="Tax Rates">
+          <PercentRow label="Marginal tax rate" value={assumptions.taxRates.marginalTaxRate} onChange={(v) => setTax('marginalTaxRate', v)} />
+          <PercentRow label="Capital-gains effective rate" value={assumptions.taxRates.capitalGainsTaxRate} onChange={(v) => setTax('capitalGainsTaxRate', v)} />
+          <PercentRow label="DTC credit rate" value={assumptions.taxRates.dtcRate} onChange={(v) => setTax('dtcRate', v)} />
         </Section>
 
-        <Section title="汇率设置">
+        <Section title="Exchange Rate">
           <FormInput
-            label="美元汇率（1 USD = ? CAD）"
+            label="USD rate (1 USD = ? CAD)"
             type="number"
             step="0.01"
             value={assumptions.exchangeRates?.usdCad ?? 1.35}
             onChange={(v) => update({ exchangeRates: { usdCad: num(v) } })}
           />
-          <p className="text-xs text-slate-400">美元投资账户按此汇率折算成加元参与所有计算。</p>
+          <p className="text-xs text-slate-400">USD accounts are converted to CAD at this rate in all calculations.</p>
         </Section>
 
-        <Section title="政府福利参数 (2026)">
-          <FormInput label="OAS 月额 (65-74岁)" type="number" prefix="$" value={assumptions.governmentBenefits.oasMonthly6574} onChange={(v) => setBenefit('oasMonthly6574', num(v))} />
-          <FormInput label="OAS 月额 (75岁+)" type="number" prefix="$" value={assumptions.governmentBenefits.oasMonthly75plus} onChange={(v) => setBenefit('oasMonthly75plus', num(v))} />
-          <FormInput label="GIS 年最高额 (单身)" type="number" prefix="$" value={assumptions.governmentBenefits.gisMaxAnnual} onChange={(v) => setBenefit('gisMaxAnnual', num(v))} />
-          <FormInput label="TFSA 年度新增额度" type="number" prefix="$" value={assumptions.governmentBenefits.tfsa_annual_room} onChange={(v) => setBenefit('tfsa_annual_room', num(v))} />
+        <Section title="Government Benefits (2026)">
+          <FormInput label="OAS monthly (65–74)" type="number" prefix="$" value={assumptions.governmentBenefits.oasMonthly6574} onChange={(v) => setBenefit('oasMonthly6574', num(v))} />
+          <FormInput label="OAS monthly (75+)" type="number" prefix="$" value={assumptions.governmentBenefits.oasMonthly75plus} onChange={(v) => setBenefit('oasMonthly75plus', num(v))} />
+          <FormInput label="GIS max annual (single)" type="number" prefix="$" value={assumptions.governmentBenefits.gisMaxAnnual} onChange={(v) => setBenefit('gisMaxAnnual', num(v))} />
+          <FormInput label="TFSA new room per year" type="number" prefix="$" value={assumptions.governmentBenefits.tfsa_annual_room} onChange={(v) => setBenefit('tfsa_annual_room', num(v))} />
         </Section>
 
-        <Section title="数据文件（推荐）">
+        <Section title="Data File (recommended)">
           <DataFileSection />
         </Section>
 
-        <Section title="数据管理">
+        <Section title="Data Management">
           <div className="space-y-3">
-            <button className="btn-secondary w-full" onClick={exportData}>{t('导出数据 (JSON)')}</button>
+            <button className="btn-secondary w-full" onClick={exportData}>{t('Export Data (JSON)')}</button>
             <label className="btn-secondary w-full cursor-pointer">
-              {t('导入数据')}
+              {t('Import Data')}
               <input type="file" accept="application/json" className="hidden" onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
             </label>
-            <button className="btn-secondary w-full" onClick={() => { reset(); }}>{t('恢复默认假设参数')}</button>
-            <button className="btn w-full bg-rose-50 text-rose-600 hover:bg-rose-100" onClick={clearAll}>{t('清除所有数据')}</button>
-            <button className="btn-ghost w-full" onClick={() => navigate('/dashboard')}>{t('返回仪表板')}</button>
+            <button className="btn-secondary w-full" onClick={() => { reset(); }}>{t('Reset Default Assumptions')}</button>
+            <button className="btn w-full bg-rose-50 text-rose-600 hover:bg-rose-100" onClick={clearAll}>{t('Clear All Data')}</button>
+            <button className="btn-ghost w-full" onClick={() => navigate('/dashboard')}>{t('Back to Dashboard')}</button>
           </div>
         </Section>
       </div>
@@ -212,7 +212,7 @@ function DataFileSection() {
   if (status === 'unsupported') {
     return (
       <p className="text-sm text-slate-400">
-        {t('当前浏览器不支持文件直连（需 Chrome/Edge）。请使用下方「导出数据」手动备份。')}
+        {t('This browser does not support direct file access (Chrome/Edge required). Use "Export data" below instead.')}
       </p>
     )
   }
@@ -220,21 +220,21 @@ function DataFileSection() {
     <div className="space-y-3">
       {status === 'connected' ? (
         <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm">
-          <span className="text-emerald-700">{t('✓ 已连接：{name}（自动保存中）', { name: fileName ?? '' })}</span>
-          <button className="btn-ghost text-xs text-slate-500" onClick={() => void disconnect()}>{t('断开')}</button>
+          <span className="text-emerald-700">{t('✓ Connected: {name} (autosaving)', { name: fileName ?? '' })}</span>
+          <button className="btn-ghost text-xs text-slate-500" onClick={() => void disconnect()}>{t('Disconnect')}</button>
         </div>
       ) : status === 'need-permission' ? (
         <button className="btn-primary w-full" onClick={() => void reconnect()}>
-          {t('恢复连接「{name}」', { name: fileName ?? '' })}
+          {t('Reconnect "{name}"', { name: fileName ?? '' })}
         </button>
       ) : (
         <>
-          <button className="btn-primary w-full" onClick={() => void createNew()}>{t('新建数据文件')}</button>
-          <button className="btn-secondary w-full" onClick={() => void openExisting()}>{t('打开现有数据文件')}</button>
+          <button className="btn-primary w-full" onClick={() => void createNew()}>{t('Create Data File')}</button>
+          <button className="btn-secondary w-full" onClick={() => void openExisting()}>{t('Open Existing Data File')}</button>
         </>
       )}
       <p className="text-xs text-slate-400">
-        {t('所有数据保存在您选择的本地 JSON 文件中并自动同步，换电脑或浏览器时打开该文件即可继续。数据不上传任何服务器。')}
+        {t('All data lives in a local JSON file of your choice and syncs automatically. Open the same file on another computer or browser to continue. Nothing is uploaded.')}
       </p>
     </div>
   )
@@ -256,7 +256,7 @@ function PercentRow({ label, value, onChange }: { label: string; value: number; 
       label={label}
       type="number"
       step="0.001"
-      suffix="(小数)"
+      suffix="(decimal)"
       value={value}
       onChange={(v) => onChange(v === '' ? 0 : Number(v))}
     />
@@ -271,8 +271,8 @@ function ProfileNote() {
   if (!profile) return null
   return (
     <p className="mt-6 text-xs text-slate-400">
-      档案：{profile.name} · {propCount} 处房产 · {invCount} 个投资账户 · {expCount} 项支出。
-      您的数据仅保存在本设备，清除浏览器数据会丢失。
+      Profile: {profile.name} · {propCount} properties · {invCount} investments · {expCount} expenses.{' '}
+      Your data stays on this device only. Clearing browser data will erase it.
     </p>
   )
 }

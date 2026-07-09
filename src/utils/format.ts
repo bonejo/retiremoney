@@ -10,15 +10,8 @@ export function formatCurrency(value: number, fractionDigits = 0): string {
   })
 }
 
-// Compact "万元" style for chart axes / KPI (Chinese convention).
-export function formatWan(value: number): string {
-  const wan = value / 10000
-  return `${wan.toFixed(wan >= 100 ? 0 : 1)}万`
-}
-
-// Language-aware compact axis label: Chinese uses 万; English uses $K/$M.
-export function formatAxis(value: number, lang: 'zh' | 'en'): string {
-  if (lang === 'zh') return formatWan(value)
+// Compact axis label: $K / $M.
+export function formatAxis(value: number): string {
   const abs = Math.abs(value)
   if (abs >= 1_000_000) return `$${(value / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`
   if (abs >= 1000) return `$${Math.round(value / 1000)}K`

@@ -89,7 +89,7 @@ export async function pickDataFile(createNew: boolean): Promise<FileSystemFileHa
   const w = window as any
   const handle: FileSystemFileHandle = createNew
     ? await w.showSaveFilePicker({
-        suggestedName: '退休规划数据.json',
+        suggestedName: 'retirement-plan-data.json',
         types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }],
       })
     : (await w.showOpenFilePicker({

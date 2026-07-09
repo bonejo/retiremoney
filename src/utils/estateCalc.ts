@@ -36,7 +36,7 @@ export function buildEstate(
     const cgTax = isPrimary ? 0 : gain * 0.5 * cgRate
     const fee = probate(p.currentValue)
     rows.push({
-      label: `${p.name}${isPrimary ? '（主要住所）' : ''}`,
+      label: `${p.name}${isPrimary ? ' (principal residence)' : ''}`,
       marketValue: p.currentValue,
       capitalGainsTax: cgTax,
       probate: fee,
@@ -64,13 +64,13 @@ export function buildEstate(
 
   const totals = rows.reduce<EstateRow>(
     (acc, r) => ({
-      label: '合计',
+      label: 'Total',
       marketValue: acc.marketValue + r.marketValue,
       capitalGainsTax: acc.capitalGainsTax + r.capitalGainsTax,
       probate: acc.probate + r.probate,
       netToHeir: acc.netToHeir + r.netToHeir,
     }),
-    { label: '合计', marketValue: 0, capitalGainsTax: 0, probate: 0, netToHeir: 0 },
+    { label: 'Total', marketValue: 0, capitalGainsTax: 0, probate: 0, netToHeir: 0 },
   )
 
   return { rows, totals }

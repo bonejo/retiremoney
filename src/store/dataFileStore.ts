@@ -32,7 +32,7 @@ function beginAutosave(handle: FileSystemFileHandle, set: (p: Partial<DataFileSt
   stopAutosave?.()
   currentHandle = handle
   stopAutosave = startAutosave(handle, () =>
-    set({ error: '自动保存失败——请在设置中重新连接数据文件' }),
+    set({ error: 'Autosave failed — reconnect the data file in Settings' }),
   )
 }
 
@@ -81,7 +81,7 @@ export const useDataFileStore = create<DataFileState>()((set) => ({
       hydrate(await readFileData(handle))
       location.href = '/dashboard' // reload so all stores re-init from the file data
     } catch (e) {
-      if ((e as Error)?.name !== 'AbortError') set({ error: '文件读取失败：格式无效' })
+      if ((e as Error)?.name !== 'AbortError') set({ error: 'Could not read file: invalid format' })
     }
   },
 

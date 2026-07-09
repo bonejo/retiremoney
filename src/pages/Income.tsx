@@ -19,36 +19,36 @@ export default function Income() {
   const yearsToOas = Math.max(0, oasAge - derived.currentAge)
 
   const rows = [
-    { label: t('出租净收入(年)'), value: derived.netRentalAnnual, note: t('来自房产模块') },
+    { label: t('Net rent (yr)'), value: derived.netRentalAnnual, note: t('from Properties') },
     {
-      label: t('OAS(年)'),
+      label: t('OAS (yr)'),
       value: derived.oasAnnual,
       note:
-        (derived.currentAge >= oasAge ? t('正在领取') : t('{n}年后开始', { n: yearsToOas })) +
+        (derived.currentAge >= oasAge ? t('receiving') : t('starts in {n} yrs', { n: yearsToOas })) +
         (derived.oasResidenceFraction < 1
-          ? t(' · 按居住年限 {n}% 折算', { n: (derived.oasResidenceFraction * 100).toFixed(0) })
+          ? t(' · prorated to {n}% by residence', { n: (derived.oasResidenceFraction * 100).toFixed(0) })
           : ''),
     },
-    { label: t('CPP(年)'), value: derived.cppAnnual, note: t('按领取年龄调整后') },
-    { label: t('GIS(年)'), value: derived.gis.gisAnnual, note: t('政府补贴') },
-    { label: t('合格股息(年)'), value: derived.eligibleDividends, note: t('投资账户') },
-    { label: t('利息收入(年)'), value: derived.interest, note: t('投资账户') },
-    { label: t('家庭借款还款({y})', { y: year }), value: familyRepayment, note: t('本金返还') },
+    { label: t('CPP (yr)'), value: derived.cppAnnual, note: t('adjusted for start age') },
+    { label: t('GIS (yr)'), value: derived.gis.gisAnnual, note: t('government supplement') },
+    { label: t('Eligible dividends (yr)'), value: derived.eligibleDividends, note: t('Investments') },
+    { label: t('Interest (yr)'), value: derived.interest, note: t('Investments') },
+    { label: t('Family loan repayment ({y})', { y: year }), value: familyRepayment, note: t('return of principal') },
   ].filter((r) => r.value > 0)
 
   const totalAnnual = rows.reduce((s, r) => s + r.value, 0)
 
   return (
-    <Page title="收入总览 & GIS/OAS">
+    <Page title="Income & GIS/OAS">
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-4">
           <div className="card p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="font-semibold">{t('自动生成收入')}</h3>
-              <span className="text-sm text-slate-400">{t('年总计 {n}', { n: formatCurrency(totalAnnual) })}</span>
+              <h3 className="font-semibold">{t('Auto-Generated Income')}</h3>
+              <span className="text-sm text-slate-400">{t('Annual total {n}', { n: formatCurrency(totalAnnual) })}</span>
             </div>
             {rows.length === 0 ? (
-              <p className="py-6 text-center text-slate-400">{t('暂无自动收入。添加房产或投资后自动显示。')}</p>
+              <p className="py-6 text-center text-slate-400">{t('No auto income yet. Add properties or investments.')}</p>
             ) : (
               <div className="divide-y divide-slate-100">
                 {rows.map((r) => (
@@ -65,20 +65,20 @@ export default function Income() {
           </div>
 
           <div className="card p-5">
-            <h3 className="mb-2 font-semibold">{t('OAS 领取时间表')}</h3>
+            <h3 className="mb-2 font-semibold">{t('OAS Timeline')}</h3>
             <div className="text-sm text-slate-600">
-              {t('当前 {n} 岁', { n: derived.currentAge })}
+              {t('Age {n}', { n: derived.currentAge })}
               {yearsToOas > 0
-                ? t(' · 距离 OAS 领取还有 {n} 年', { n: yearsToOas })
-                : t(' · 已达 OAS 领取年龄')}
+                ? t(' · {n} years until OAS', { n: yearsToOas })
+                : t(' · at OAS age')}
             </div>
             <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-lg bg-slate-50 p-3">
-                <div className="text-xs text-slate-400">{t('65–74 岁 月额')}</div>
+                <div className="text-xs text-slate-400">{t('Monthly, 65–74')}</div>
                 <div className="font-semibold">{formatCurrency(assumptions.governmentBenefits.oasMonthly6574)}</div>
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
-                <div className="text-xs text-slate-400">{t('75 岁+ 月额')}</div>
+                <div className="text-xs text-slate-400">{t('Monthly, 75+')}</div>
                 <div className="font-semibold">{formatCurrency(assumptions.governmentBenefits.oasMonthly75plus)}</div>
               </div>
             </div>

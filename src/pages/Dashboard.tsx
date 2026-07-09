@@ -63,33 +63,33 @@ export default function Dashboard() {
       : assumptions.governmentBenefits.gisMaxAnnual * 2
 
   return (
-    <Page title="主仪表板">
+    <Page title="Dashboard">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KPICard label={t('总净资产')} value={formatCurrency(today?.netWorth ?? 0)} accent="brand" />
+        <KPICard label={t('Total Net Worth')} value={formatCurrency(today?.netWorth ?? 0)} accent="brand" />
         <KPICard
-          label={t('月净现金流')}
+          label={t('Monthly Net Cash Flow')}
           value={formatCurrency(netCashFlow)}
           accent={netCashFlow >= 0 ? 'positive' : 'negative'}
           sub={
             supplementActive && plan.totalWithdrawal > 0
-              ? t('缺口由投资提取补足 {n}/月', { n: formatCurrency(plan.totalWithdrawal / 12) })
-              : t('收入 {a} − 支出 {b}（含所得税月摊）', {
+              ? t('Gap funded by withdrawals: {n}/mo', { n: formatCurrency(plan.totalWithdrawal / 12) })
+              : t('Income {a} − expenses {b} (incl. monthly income tax)', {
                   a: formatCurrency(monthlyIncome),
                   b: formatCurrency(monthlyExpense),
                 })
           }
         />
         <KPICard
-          label={t('年度预估税费')}
+          label={t('Est. Annual Taxes')}
           value={formatCurrency(annualTax)}
-          sub={supplementActive && withdrawalTax > 0 ? t('所得税（含提取被动收入）+ 地税') : t('所得税 + 地税')}
+          sub={supplementActive && withdrawalTax > 0 ? t('Income tax (incl. withdrawal income) + property tax') : t('Income tax + property tax')}
         />
-        <KPICard label={t('TFSA 余额')} value={formatCurrency(tfsaTotal)} accent="positive" />
+        <KPICard label={t('TFSA Balance')} value={formatCurrency(tfsaTotal)} accent="positive" />
       </div>
 
       <div className="card mt-6 p-5">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-semibold">{t('资产预测')}</h3>
+          <h3 className="font-semibold">{t('Projections')}</h3>
           <div className="flex gap-1">
             {horizons.map((h) => (
               <button
@@ -97,13 +97,13 @@ export default function Dashboard() {
                 className={`btn px-3 py-1 text-sm ${horizon === h ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => setHorizon(h)}
               >
-                {t('{n}年', { n: h })}
+                {t('{n} yr', { n: h })}
               </button>
             ))}
           </div>
         </div>
         {properties.length === 0 && investments.length === 0 ? (
-          <p className="py-10 text-center text-slate-400">{t('添加房产或投资账户后显示预测曲线。')}</p>
+          <p className="py-10 text-center text-slate-400">{t('Add a property or investment account to see projections.')}</p>
         ) : (
           <ProjectionChart data={data} showDebt />
         )}
@@ -111,58 +111,58 @@ export default function Dashboard() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="card p-5">
-          <h3 className="mb-3 font-semibold">{t('本月收支摘要')}</h3>
-          <Row label={t('租金收入（毛租金−空置）')} value={cashflow.rentalIncome / 12} positive />
+          <h3 className="mb-3 font-semibold">{t('This Month at a Glance')}</h3>
+          <Row label={t('Rent (gross − vacancy)')} value={cashflow.rentalIncome / 12} positive />
           <Row label="OAS" value={derived.oasMonthly} positive />
           {derived.cppMonthly > 0 && <Row label="CPP" value={derived.cppMonthly} positive />}
           <Row
-            label={gis.gisMonthly < derived.gis.gisMonthly ? t('GIS（已计提取收入影响）') : 'GIS'}
+            label={gis.gisMonthly < derived.gis.gisMonthly ? t('GIS (reflects withdrawal income)') : 'GIS'}
             value={gis.gisMonthly}
             positive
           />
-          <Row label={t('投资股息/利息')} value={(derived.eligibleDividends + derived.interest) / 12} positive />
+          <Row label={t('Dividends / interest')} value={(derived.eligibleDividends + derived.interest) / 12} positive />
           {cashflow.familyLoanRepayments > 0 && (
-            <Row label={t('家庭借款还款')} value={cashflow.familyLoanRepayments / 12} positive />
+            <Row label={t('Family loan repayment')} value={cashflow.familyLoanRepayments / 12} positive />
           )}
           <div className="my-2 border-t border-slate-100" />
-          <Row label={t('房产支出（含归属支出）')} value={-cashflow.propertyExpenses / 12} />
-          <Row label={t('个人支出')} value={-cashflow.personalExpenses / 12} />
-          <Row label={t('所得税（月摊）')} value={-baseTax.totalTax / 12} />
+          <Row label={t('Property costs (incl. assigned)')} value={-cashflow.propertyExpenses / 12} />
+          <Row label={t('Personal expenses')} value={-cashflow.personalExpenses / 12} />
+          <Row label={t('Income tax (monthly)')} value={-baseTax.totalTax / 12} />
           <div className="my-2 border-t border-slate-100" />
-          <Row label={t('净现金流')} value={netCashFlow} bold positive={netCashFlow >= 0} />
+          <Row label={t('Net cash flow')} value={netCashFlow} bold positive={netCashFlow >= 0} />
 
           {annualShortfall > 0 && (
             <div className="mt-3 rounded-lg bg-slate-50 p-3">
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
                 <input type="checkbox" checked={supplement} onChange={(e) => setSupplement(e.target.checked)} />
-                {t('缺口由投资提取补足')}
+                {t('Fund gap from investments')}
               </label>
               {supplementActive && (
                 <div className="mt-2 space-y-0.5 text-sm">
                   {plan.rows.map((r) => (
                     <Row
                       key={r.investment.id}
-                      label={t('提取：{name}', { name: r.investment.accountName || r.investment.type })}
+                      label={t('Withdraw: {name}', { name: r.investment.accountName || r.investment.type })}
                       value={r.withdrawal / 12}
                       positive
                     />
                   ))}
                   {withdrawalTax > 0 && (
-                    <Row label={t('提取被动收入增加的所得税（分档计算）')} value={-withdrawalTax / 12} />
+                    <Row label={t('Extra income tax from withdrawal income (bracketed)')} value={-withdrawalTax / 12} />
                   )}
                   <div className="my-1 border-t border-slate-200" />
                   {plan.uncovered > 0.01 ? (
-                    <Row label={t('补足后仍缺')} value={-plan.uncovered / 12} bold />
+                    <Row label={t('Still short after withdrawals')} value={-plan.uncovered / 12} bold />
                   ) : plan.rows.length > 0 ? (
-                    <Row label={t('补足后净现金流')} value={0} bold positive />
+                    <Row label={t('Net cash flow after withdrawals')} value={0} bold positive />
                   ) : (
                     <p className="pt-1 text-xs text-amber-600">
-                      {t('没有可提取的账户——请在「投资账户」为账户设置「提取优先级」。')}
+                      {t('No account to draw from — set a withdrawal priority in Investments.')}
                     </p>
                   )}
                   {plan.rows.some((r) => r.realizedGain > 0 || r.ordinaryIncome > 0) && (
                     <p className="pt-1 text-xs text-slate-400">
-                      {t('提取产生的应税收入已计入所得税与 GIS 净收入测试。')}
+                      {t('Taxable income from withdrawals is included in income tax and the GIS income test.')}
                     </p>
                   )}
                 </div>
@@ -172,26 +172,26 @@ export default function Dashboard() {
         </div>
 
         <div className="card p-5">
-          <h3 className="mb-3 font-semibold">{t('关键提醒')}</h3>
+          <h3 className="mb-3 font-semibold">{t('Key Reminders')}</h3>
           <div className="space-y-2 text-sm">
             {depletion && (
               <Reminder
                 color="⚠️"
-                text={t('预测 {age} 岁时可提取投资耗尽，当年资金缺口约 {n}——需提前规划（卖房、反向贷款或削减支出）', {
+                text={t('Projected to exhaust withdrawable investments at age {age}; gap that year ≈ {n}. Plan ahead: sell property, reverse mortgage, or cut spending.', {
                   age: depletion.age,
                   n: formatCurrency(depletion.unfundedShortfall),
                 })}
               />
             )}
-            <Reminder color="🔴" text={t('年地税约 {n}（通常7月到期）', { n: formatCurrency(annualPropertyTax) })} />
+            <Reminder color="🔴" text={t('Annual property tax ≈ {n} (usually due in July)', { n: formatCurrency(annualPropertyTax) })} />
             {mortgageReminder.map((m, i) => (
               <Reminder
                 key={i}
                 color="🟡"
                 text={
                   m.stats.valid
-                    ? t('{name} Mortgage 预计 {age} 岁还清', { name: m.name, age: m.age.toFixed(0) })
-                    : t('{name} Mortgage 月供不足以覆盖利息', { name: m.name })
+                    ? t('{name}: mortgage paid off around age {age}', { name: m.name, age: m.age.toFixed(0) })
+                    : t('{name}: mortgage payment does not cover interest', { name: m.name })
                 }
               />
             ))}
@@ -199,16 +199,16 @@ export default function Dashboard() {
               color={gis.eligible ? '🟢' : '🔴'}
               text={
                 gis.eligible
-                  ? t('GIS 有资格（净收入 {a} < 门槛 {b}，含提取收入）', {
+                  ? t('GIS eligible (net income {a} < threshold {b}, incl. withdrawal income)', {
                       a: formatCurrency(gis.netIncome),
                       b: formatCurrency(gisThreshold),
                     })
-                  : t('GIS 超出门槛（净收入 {a}，含提取收入）', { a: formatCurrency(gis.netIncome) })
+                  : t('Over GIS threshold (net income {a}, incl. withdrawal income)', { a: formatCurrency(gis.netIncome) })
               }
             />
             <Reminder
               color="🔵"
-              text={t('TFSA 可存额度 {n}', {
+              text={t('TFSA contribution room {n}', {
                 n: formatCurrency(
                   investments.filter((i) => i.type === 'TFSA').reduce((s, i) => s + (i.tfsa?.contributionRoom ?? 0), 0),
                 ),
@@ -221,37 +221,37 @@ export default function Dashboard() {
       {(properties.length > 0 || expenses.length > 0) && (
         <div className="card mt-6 p-5">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="font-semibold">{t('年度收支总览')}</h3>
+            <h3 className="font-semibold">{t('Annual Cash Flow Overview')}</h3>
             <span
               className={`text-lg font-semibold ${netCashFlow >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
             >
-              {netCashFlow < 0 ? '−' : '+'}{formatCurrency(Math.abs(netCashFlow * 12))}{t('/年')}
+              {netCashFlow < 0 ? '−' : '+'}{formatCurrency(Math.abs(netCashFlow * 12))}{t('/yr')}
             </span>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">{t('按房产')}</div>
+              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">{t('By property')}</div>
               {cashflow.propertyRows.length === 0 ? (
-                <p className="py-2 text-sm text-slate-400">{t('暂无房产。')}</p>
+                <p className="py-2 text-sm text-slate-400">{t('No properties yet.')}</p>
               ) : (
                 cashflow.propertyRows.map(({ property, balance }) => (
                   <Row
                     key={property.id}
-                    label={t('{name}（租金 − 全部持有成本）', { name: property.name || t('未命名') })}
+                    label={t('{name} (rent − all carrying costs)', { name: property.name || t('Unnamed') })}
                     value={balance.net}
                     positive={balance.net >= 0}
                   />
                 ))
               )}
-              <Row label={t('个人支出（未归属房产）')} value={-cashflow.personalExpenses} />
-              <Row label={t('所得税')} value={-baseTax.totalTax} />
+              <Row label={t('Personal expenses (unassigned)')} value={-cashflow.personalExpenses} />
+              <Row label={t('Income tax')} value={-baseTax.totalTax} />
             </div>
             <div>
-              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">{t('其他收入')}</div>
+              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">{t('Other income')}</div>
               <Row label="OAS + CPP + GIS" value={(derived.oasMonthly + derived.cppMonthly + gis.gisMonthly) * 12} positive />
-              <Row label={t('投资股息/利息')} value={derived.eligibleDividends + derived.interest} positive />
+              <Row label={t('Dividends / interest')} value={derived.eligibleDividends + derived.interest} positive />
               {cashflow.familyLoanRepayments > 0 && (
-                <Row label={t('家庭借款还款（今年）')} value={cashflow.familyLoanRepayments} positive />
+                <Row label={t('Family loan repayment (this year)')} value={cashflow.familyLoanRepayments} positive />
               )}
             </div>
           </div>

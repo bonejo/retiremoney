@@ -48,17 +48,17 @@ export function computeGIS(
   const gisMonthly = gisAnnual / 12
 
   const breakdown = [
-    { label: '出租净收入', amount: inputs.rentalNet, note: '100%计入' },
+    { label: 'Net rental income', amount: inputs.rentalNet, note: '100% counted' },
     {
-      label: '合格股息',
+      label: 'Eligible dividends',
       amount: dividendCounted,
       note: `×${grossUp} grossed-up`,
     },
-    { label: '利息收入', amount: inputs.interest, note: '100%计入' },
-    { label: '资本利得', amount: capGainCounted, note: '×50%计入' },
-    { label: '其他收入', amount: other, note: '100%计入' },
-    { label: 'HELOC利息', amount: -inputs.helocInterest, note: 'Line 22100抵扣' },
-    { label: 'TFSA收益', amount: 0, note: '免税，不计入' },
+    { label: 'Interest income', amount: inputs.interest, note: '100% counted' },
+    { label: 'Capital gains', amount: capGainCounted, note: '50% counted' },
+    { label: 'Other income', amount: other, note: '100% counted' },
+    { label: 'HELOC interest', amount: -inputs.helocInterest, note: 'Line 22100 deduction' },
+    { label: 'TFSA income', amount: 0, note: 'tax-free, excluded' },
   ]
 
   return {

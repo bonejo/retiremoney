@@ -69,30 +69,30 @@ export const PROPERTY_TAX_RATES: Record<string, number> = {
 }
 
 export const EXPENSE_CATEGORY_LABELS: Record<string, string> = {
-  utilities: '水电气',
-  vehicle: '车辆',
-  food_dining: '饮食',
-  healthcare: '医疗',
-  travel: '旅游',
-  insurance: '保险',
-  phone_internet: '电话网络',
-  entertainment: '娱乐',
-  clothing: '服装',
-  gifts_charity: '礼品慈善',
-  other: '其他',
+  utilities: 'Utilities',
+  vehicle: 'Vehicle',
+  food_dining: 'Food & dining',
+  healthcare: 'Healthcare',
+  travel: 'Travel',
+  insurance: 'Insurance',
+  phone_internet: 'Phone & internet',
+  entertainment: 'Entertainment',
+  clothing: 'Clothing',
+  gifts_charity: 'Gifts & charity',
+  other: 'Other',
 }
 
 export const INVESTMENT_TYPE_LABELS: Record<string, string> = {
   TFSA: 'TFSA',
   RRSP: 'RRSP',
-  non_registered: '非注册',
+  non_registered: 'Non-registered',
   GIC: 'GIC',
-  savings: '储蓄',
-  other: '其他',
+  savings: 'Savings',
+  other: 'Other',
 }
 
 export const PROPERTY_TYPE_LABELS: Record<string, string> = {
-  primary_residence: '自住',
-  rental: '出租',
-  mixed: '混合',
+  primary_residence: 'Primary',
+  rental: 'Rental',
+  mixed: 'Mixed',
 }

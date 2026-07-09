@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FormInput from '../components/common/FormInput'
-import LangToggle from '../components/common/LangToggle'
 import { useProfileStore } from '../store/profileStore'
 import { usePropertyStore, emptyProperty } from '../store/propertyStore'
 import { useInvestmentStore, emptyInvestment } from '../store/investmentStore'
@@ -96,7 +95,7 @@ export default function Wizard() {
     if (hasHome && Number(homeValue) > 0) {
       const base = home ?? emptyProperty()
       const p = { ...base }
-      p.name = homeName || t('自住房')
+      p.name = homeName || t('Home')
       p.type = 'primary_residence'
       p.currentValue = Number(homeValue)
       p.purchasePrice = Number(purchasePrice) || Number(homeValue)
@@ -131,22 +130,21 @@ export default function Wizard() {
     upsertInvestment('non_registered', nonReg, nonRegAcb)
 
     // Expenses
-    upsertExpense('wiz-living', t('生活开支'), 'other', living)
-    upsertExpense('wiz-health', t('医疗'), 'healthcare', health)
+    upsertExpense('wiz-living', t('Living expenses'), 'other', living)
+    upsertExpense('wiz-health', t('Healthcare'), 'healthcare', health)
 
     navigate('/dashboard')
   }
 
-  const stepTitle = [t('房产'), t('房贷'), t('收入'), t('投资'), t('支出')][step - 1]
+  const stepTitle = [t('Property'), t('Mortgage'), t('Income'), t('Investment'), t('Expenses')][step - 1]
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
       <div className="card w-full max-w-lg p-8">
-        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="mb-4 border-b border-slate-100 pb-3">
           <span className="text-sm font-medium text-slate-500">
-            {t('财务问卷')} · {step}/{TOTAL} · {stepTitle}
+            {t('Questionnaire')} · {step}/{TOTAL} · {stepTitle}
           </span>
-          <LangToggle />
         </div>
         <div className="mb-6 flex items-center gap-2">
           {Array.from({ length: TOTAL }, (_, i) => (
@@ -156,18 +154,18 @@ export default function Wizard() {
 
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">🏠 {t('房产')}</h2>
+            <h2 className="text-xl font-semibold">🏠 {t('Property')}</h2>
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={hasHome} onChange={(e) => setHasHome(e.target.checked)} />
-              {t('我拥有自住房')}
+              {t('I own my home')}
             </label>
             {hasHome && (
               <div className="space-y-3">
-                <FormInput label="房产名称" value={homeName} onChange={setHomeName} placeholder="自住公寓" />
-                <FormInput label="当前市值" type="number" prefix="$" value={homeValue} onChange={setHomeValue} placeholder="1200000" />
+                <FormInput label="Property name" value={homeName} onChange={setHomeName} placeholder="e.g. Condo" />
+                <FormInput label="Current market value" type="number" prefix="$" value={homeValue} onChange={setHomeValue} placeholder="1200000" />
                 <div className="grid grid-cols-2 gap-3">
-                  <FormInput label="购买价格 (ACB)" type="number" prefix="$" value={purchasePrice} onChange={setPurchasePrice} />
-                  <FormInput label="购买年份" type="number" value={purchaseYear} onChange={setPurchaseYear} placeholder="2015" />
+                  <FormInput label="Purchase price (ACB)" type="number" prefix="$" value={purchasePrice} onChange={setPurchasePrice} />
+                  <FormInput label="Purchase year" type="number" value={purchaseYear} onChange={setPurchaseYear} placeholder="2015" />
                 </div>
               </div>
             )}
@@ -176,26 +174,26 @@ export default function Wizard() {
 
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">🏦 {t('房贷')}</h2>
+            <h2 className="text-xl font-semibold">🏦 {t('Mortgage')}</h2>
             {!hasHome ? (
-              <p className="text-sm text-slate-400">{t('未填写房产，可跳过。')}</p>
+              <p className="text-sm text-slate-400">{t('No property entered — you can skip this.')}</p>
             ) : (
               <>
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" checked={hasMortgage} onChange={(e) => setHasMortgage(e.target.checked)} />
-                  {t('有房贷 (Mortgage)')}
+                  {t('I have a mortgage')}
                 </label>
                 {hasMortgage && (
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
-                      <FormInput label="剩余余额" type="number" prefix="$" value={mortBalance} onChange={setMortBalance} />
-                      <FormInput label="余额记录月份" type="month" value={mortAsOf} onChange={setMortAsOf} />
+                      <FormInput label="Remaining balance" type="number" prefix="$" value={mortBalance} onChange={setMortBalance} />
+                      <FormInput label="Balance as-of month" type="month" value={mortAsOf} onChange={setMortAsOf} />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <FormInput label="月供" type="number" prefix="$" value={mortPayment} onChange={setMortPayment} />
-                      <FormInput label="年利率 %" type="number" step="0.01" value={mortRate} onChange={setMortRate} />
+                      <FormInput label="Mortgage /mo" type="number" prefix="$" value={mortPayment} onChange={setMortPayment} />
+                      <FormInput label="Interest rate %" type="number" step="0.01" value={mortRate} onChange={setMortRate} />
                     </div>
-                    <p className="text-xs text-slate-400">{t('填历史某月余额与月份，系统会自动推算到今天。')}</p>
+                    <p className="text-xs text-slate-400">{t('Enter a past balance and its month; the app projects it forward to today.')}</p>
                   </div>
                 )}
               </>
@@ -205,45 +203,45 @@ export default function Wizard() {
 
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">💵 {t('收入')}</h2>
+            <h2 className="text-xl font-semibold">💵 {t('Income')}</h2>
             <div className="rounded-lg bg-slate-50 p-3">
-              <div className="mb-2 text-sm font-medium text-slate-700">{t('在职收入（可选）')}</div>
+              <div className="mb-2 text-sm font-medium text-slate-700">{t('Employment Income (optional)')}</div>
               <div className="grid grid-cols-2 gap-3">
-                <FormInput label="年工作收入" type="number" prefix="$" value={workIncome} onChange={setWorkIncome} placeholder="80000" />
-                <FormInput label="计划退休年龄" type="number" value={retireAge} onChange={setRetireAge} />
+                <FormInput label="Annual work income" type="number" prefix="$" value={workIncome} onChange={setWorkIncome} placeholder="80000" />
+                <FormInput label="Planned retirement age" type="number" value={retireAge} onChange={setRetireAge} />
               </div>
-              <p className="mt-1 text-xs text-slate-400">{t('退休前工作收入用于增长投资；到退休年龄后归零，转为从投资提取。')}</p>
+              <p className="mt-1 text-xs text-slate-400">{t('Work income grows your investments before retirement; at the retirement age it drops to $0 and you draw from investments.')}</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-3">
-              <div className="mb-2 text-sm font-medium text-slate-700">{t('CPP 养老金（可选）')}</div>
+              <div className="mb-2 text-sm font-medium text-slate-700">{t('CPP Pension (optional)')}</div>
               <div className="grid grid-cols-2 gap-3">
-                <FormInput label="65岁预估月额" type="number" prefix="$" value={cppAt65} onChange={setCppAt65} placeholder="见My Service Canada" />
-                <FormInput label="开始领取年龄 (60-70)" type="number" value={cppStart} onChange={setCppStart} />
+                <FormInput label="Est. monthly at 65" type="number" prefix="$" value={cppAt65} onChange={setCppAt65} placeholder="See My Service Canada" />
+                <FormInput label="Start age (60–70)" type="number" value={cppStart} onChange={setCppStart} />
               </div>
-              <p className="mt-1 text-xs text-slate-400">{t('OAS 会根据年龄和居住年限自动计算。')}</p>
+              <p className="mt-1 text-xs text-slate-400">{t('OAS is calculated automatically from age and years of residence.')}</p>
             </div>
           </div>
         )}
 
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">📈 {t('投资')}</h2>
-            <FormInput label="TFSA 余额" type="number" prefix="$" value={tfsa} onChange={setTfsa} placeholder="95000" />
-            <FormInput label="RRSP 余额" type="number" prefix="$" value={rrsp} onChange={setRrsp} />
+            <h2 className="text-xl font-semibold">📈 {t('Investment')}</h2>
+            <FormInput label="TFSA Balance" type="number" prefix="$" value={tfsa} onChange={setTfsa} placeholder="95000" />
+            <FormInput label="RRSP balance" type="number" prefix="$" value={rrsp} onChange={setRrsp} />
             <div className="grid grid-cols-2 gap-3">
-              <FormInput label="非注册账户余额" type="number" prefix="$" value={nonReg} onChange={setNonReg} />
-              <FormInput label="非注册原始成本 (ACB)" type="number" prefix="$" value={nonRegAcb} onChange={setNonRegAcb} />
+              <FormInput label="Non-registered balance" type="number" prefix="$" value={nonReg} onChange={setNonReg} />
+              <FormInput label="Non-registered cost basis (ACB)" type="number" prefix="$" value={nonRegAcb} onChange={setNonRegAcb} />
             </div>
-            <p className="text-xs text-slate-400">{t('可留空，之后在「投资账户」页添加更多账户（GIC、家庭借款等）。')}</p>
+            <p className="text-xs text-slate-400">{t('Optional — add more accounts (GIC, family loans, etc.) later on the Investments page.')}</p>
           </div>
         )}
 
         {step === 5 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">🧾 {t('支出')}</h2>
-            <FormInput label="每月生活开支" type="number" prefix="$" value={living} onChange={setLiving} placeholder="4000" />
-            <FormInput label="每月医疗开支" type="number" prefix="$" value={health} onChange={setHealth} placeholder="300" />
-            <p className="text-xs text-slate-400">{t('填每月大致金额即可；之后可在「支出管理」页细分（车辆、旅游、保险等）。')}</p>
+            <h2 className="text-xl font-semibold">🧾 {t('Expenses')}</h2>
+            <FormInput label="Monthly living expenses" type="number" prefix="$" value={living} onChange={setLiving} placeholder="4000" />
+            <FormInput label="Monthly healthcare" type="number" prefix="$" value={health} onChange={setHealth} placeholder="300" />
+            <p className="text-xs text-slate-400">{t('Rough monthly amounts are fine; itemize later on the Expenses page (vehicle, travel, insurance, etc.).')}</p>
           </div>
         )}
 
@@ -252,12 +250,12 @@ export default function Wizard() {
             className="btn-ghost"
             onClick={() => (step === 1 ? navigate('/dashboard') : setStep(step - 1))}
           >
-            {step === 1 ? t('跳过') : t('上一步')}
+            {step === 1 ? t('Skip') : t('Back')}
           </button>
           {step < TOTAL ? (
-            <button className="btn-primary" onClick={() => setStep(step + 1)}>{t('下一步')}</button>
+            <button className="btn-primary" onClick={() => setStep(step + 1)}>{t('Next')}</button>
           ) : (
-            <button className="btn-primary" onClick={finish}>{t('完成')}</button>
+            <button className="btn-primary" onClick={finish}>{t('Finish')}</button>
           )}
         </div>
       </div>

@@ -32,8 +32,8 @@ function DataFileBanner() {
   if (status === 'need-permission') {
     return (
       <div className="flex items-center justify-center gap-3 bg-amber-50 px-4 py-2 text-sm text-amber-800">
-        <span>数据文件「{fileName}」需要重新授权才能继续自动保存。</span>
-        <button className="btn-primary px-3 py-1 text-xs" onClick={reconnect}>恢复连接</button>
+        <span>Data file "{fileName}" needs permission again to keep autosaving.</span>
+        <button className="btn-primary px-3 py-1 text-xs" onClick={reconnect}>Reconnect</button>
       </div>
     )
   }

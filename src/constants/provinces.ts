@@ -16,7 +16,7 @@ export interface ProvinceInfo {
 export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   BC: {
     code: 'BC',
-    name: '不列颠哥伦比亚 BC',
+    name: 'British Columbia (BC)',
     brackets: [
       { upTo: 49279, rate: 0.0506 },
       { upTo: 98560, rate: 0.077 },
@@ -31,7 +31,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   AB: {
     code: 'AB',
-    name: '阿尔伯塔 AB',
+    name: 'Alberta (AB)',
     brackets: [
       { upTo: 60000, rate: 0.08 },
       { upTo: 151234, rate: 0.1 },
@@ -45,7 +45,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   SK: {
     code: 'SK',
-    name: '萨斯喀彻温 SK',
+    name: 'Saskatchewan (SK)',
     brackets: [
       { upTo: 53463, rate: 0.105 },
       { upTo: 152750, rate: 0.125 },
@@ -56,7 +56,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   MB: {
     code: 'MB',
-    name: '曼尼托巴 MB',
+    name: 'Manitoba (MB)',
     brackets: [
       { upTo: 47000, rate: 0.108 },
       { upTo: 100000, rate: 0.1275 },
@@ -67,7 +67,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   ON: {
     code: 'ON',
-    name: '安大略 ON',
+    name: 'Ontario (ON)',
     brackets: [
       { upTo: 52886, rate: 0.0505 },
       { upTo: 105775, rate: 0.0915 },
@@ -80,7 +80,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   QC: {
     code: 'QC',
-    name: '魁北克 QC',
+    name: 'Quebec (QC)',
     brackets: [
       { upTo: 53255, rate: 0.14 },
       { upTo: 106495, rate: 0.19 },
@@ -92,7 +92,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   NB: {
     code: 'NB',
-    name: '新不伦瑞克 NB',
+    name: 'New Brunswick (NB)',
     brackets: [
       { upTo: 51306, rate: 0.094 },
       { upTo: 102614, rate: 0.14 },
@@ -104,7 +104,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   NS: {
     code: 'NS',
-    name: '新斯科舍 NS',
+    name: 'Nova Scotia (NS)',
     brackets: [
       { upTo: 30507, rate: 0.0879 },
       { upTo: 61015, rate: 0.1495 },
@@ -117,7 +117,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   PE: {
     code: 'PE',
-    name: '爱德华王子岛 PE',
+    name: 'Prince Edward Island (PE)',
     brackets: [
       { upTo: 33328, rate: 0.095 },
       { upTo: 64656, rate: 0.1347 },
@@ -130,7 +130,7 @@ export const PROVINCES: Record<ProvinceCode, ProvinceInfo> = {
   },
   NL: {
     code: 'NL',
-    name: '纽芬兰-拉布拉多 NL',
+    name: 'Newfoundland & Labrador (NL)',
     brackets: [
       { upTo: 44192, rate: 0.087 },
       { upTo: 88382, rate: 0.145 },

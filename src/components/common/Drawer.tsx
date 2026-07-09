@@ -32,7 +32,7 @@ export default function Drawer({ open, onClose, title, children, footer }: Drawe
       <div className="relative flex h-full w-full max-w-xl flex-col bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <h2 className="text-lg font-semibold">{t(title)}</h2>
-          <button className="btn-ghost" onClick={onClose} aria-label="关闭">
+          <button className="btn-ghost" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>

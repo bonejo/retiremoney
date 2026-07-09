@@ -16,29 +16,29 @@ export default function Estate() {
   const { rows, totals } = buildEstate(properties, investments, assumptions, province)
 
   return (
-    <Page title="遗产规划">
+    <Page title="Estate">
       <p className="mb-4 text-sm text-slate-500">
-        {t('基于当前市值估算（未来市值预测为 Phase 3）。TFSA 指定受益人可完全绕过 Probate。')}
+        {t('Based on current market values (future-value projection is Phase 3). A TFSA with a named beneficiary bypasses probate entirely.')}
       </p>
 
       {rows.length === 0 ? (
-        <div className="card p-10 text-center text-slate-400">{t('添加房产或投资后显示遗产分析。')}</div>
+        <div className="card p-10 text-center text-slate-400">{t('Add properties or investments to see the estate analysis.')}</div>
       ) : (
         <div className="card overflow-x-auto p-5">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-500">
-                <th className="py-2 pr-4">{t('资产类型')}</th>
-                <th className="py-2 pr-4">{t('预计市值')}</th>
-                <th className="py-2 pr-4">{t('资本利得税')}</th>
-                <th className="py-2 pr-4">{t('Probate费')}</th>
-                <th className="py-2 pr-4">{t('净传承金额')}</th>
+                <th className="py-2 pr-4">{t('Asset')}</th>
+                <th className="py-2 pr-4">{t('Market value')}</th>
+                <th className="py-2 pr-4">{t('Capital gains tax')}</th>
+                <th className="py-2 pr-4">{t('Probate fee')}</th>
+                <th className="py-2 pr-4">{t('Net to heirs')}</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r, i) => (
                 <tr key={i} className="border-b border-slate-50">
-                  <td className="py-2 pr-4 font-medium">{r.label.replace('（主要住所）', t('（主要住所）'))}</td>
+                  <td className="py-2 pr-4 font-medium">{r.label.replace(' (principal residence)', t(' (principal residence)'))}</td>
                   <td className="py-2 pr-4">{formatCurrency(r.marketValue)}</td>
                   <td className="py-2 pr-4 text-rose-600">{formatCurrency(r.capitalGainsTax)}</td>
                   <td className="py-2 pr-4 text-rose-600">{formatCurrency(r.probate)}</td>

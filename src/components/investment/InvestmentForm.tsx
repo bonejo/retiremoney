@@ -13,17 +13,17 @@ interface InvestmentFormProps {
 
 const typeOptions: { value: InvestmentType; label: string }[] = [
   { value: 'TFSA', label: 'TFSA' },
-  { value: 'non_registered', label: '非注册' },
+  { value: 'non_registered', label: 'Non-registered' },
   { value: 'RRSP', label: 'RRSP' },
   { value: 'GIC', label: 'GIC' },
-  { value: 'savings', label: '储蓄' },
-  { value: 'other', label: '其他' },
+  { value: 'savings', label: 'Savings' },
+  { value: 'other', label: 'Other' },
 ]
 
 const dividendOptions: { value: DividendType; label: string }[] = [
-  { value: 'eligible', label: '合格股息' },
-  { value: 'non_eligible', label: '非合格' },
-  { value: 'none', label: '无股息' },
+  { value: 'eligible', label: 'Eligible dividends' },
+  { value: 'non_eligible', label: 'Non-eligible' },
+  { value: 'none', label: 'None' },
 ]
 
 export default function InvestmentForm({ initial, onSave, onCancel }: InvestmentFormProps) {
@@ -52,7 +52,7 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-4">
         <div>
-          <span className="label">账户类型</span>
+          <span className="label">Account type</span>
           <div className="grid grid-cols-3 gap-2">
             {typeOptions.map((o) => (
               <button
@@ -67,12 +67,12 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <FormInput label="金融机构" value={inv.institutionName} onChange={(v) => set({ institutionName: v })} placeholder="TD Bank" />
-          <FormInput label="账户昵称" value={inv.accountName} onChange={(v) => set({ accountName: v })} placeholder="成长ETF" />
+          <FormInput label="Institution" value={inv.institutionName} onChange={(v) => set({ institutionName: v })} placeholder="TD Bank" />
+          <FormInput label="Account nickname" value={inv.accountName} onChange={(v) => set({ accountName: v })} placeholder="e.g. Growth ETF" />
         </div>
 
         <div>
-          <span className="label">币种</span>
+          <span className="label">Currency</span>
           <div className="grid grid-cols-2 gap-2">
             {(['CAD', 'USD'] as const).map((c) => (
               <button
@@ -80,21 +80,21 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
                 className={`btn ${(inv.currency ?? 'CAD') === c ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => set({ currency: c })}
               >
-                {c === 'CAD' ? '加元 CAD' : '美元 USD'}
+                {c === 'CAD' ? 'CAD' : 'USD'}
               </button>
             ))}
           </div>
           {inv.currency === 'USD' && (
             <p className="mt-1 text-xs text-slate-400">
-              金额按美元填写，全局按 1 USD = {usdCadRate().toFixed(2)} CAD 折算（可在「全局设置」修改汇率）。
+              Enter amounts in USD; converted at 1 USD = {usdCadRate().toFixed(2)} CAD (change the rate in Settings).
             </p>
           )}
         </div>
 
         {!historical && (
-          <FormInput label={inv.currency === 'USD' ? '当前余额 (USD)' : '当前余额'} type="number" prefix={inv.currency === 'USD' ? 'US$' : '$'} value={inv.currentBalance || ''} onChange={(v) => set({ currentBalance: num(v) })} />
+          <FormInput label={inv.currency === 'USD' ? 'Current balance (USD)' : 'Current balance'} type="number" prefix={inv.currency === 'USD' ? 'US$' : '$'} value={inv.currentBalance || ''} onChange={(v) => set({ currentBalance: num(v) })} />
         )}
-        <SliderInput label="预期年化总回报率" value={inv.annualReturnRate} onChange={(v) => set({ annualReturnRate: v })} max={0.12} />
+        <SliderInput label="Expected total return /yr" value={inv.annualReturnRate} onChange={(v) => set({ annualReturnRate: v })} max={0.12} />
 
         <div className="rounded-lg border border-slate-200 p-3">
           <label className="flex items-center gap-2 text-sm">
@@ -107,19 +107,19 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
                   : set({ startDate: undefined, startValue: undefined })
               }
             />
-            从历史投资推算当前余额
+            Project current balance from a past investment
           </label>
           {historical && (
             <div className="mt-3 space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <FormInput label="开始投资月份" type="month" value={inv.startDate ?? ''} onChange={(v) => set({ startDate: v || undefined })} />
-                <FormInput label="初始投入金额" type="number" prefix={inv.currency === 'USD' ? 'US$' : '$'} value={inv.startValue ?? ''} onChange={(v) => set({ startValue: num(v) })} />
+                <FormInput label="Investment start month" type="month" value={inv.startDate ?? ''} onChange={(v) => set({ startDate: v || undefined })} />
+                <FormInput label="Initial amount" type="number" prefix={inv.currency === 'USD' ? 'US$' : '$'} value={inv.startValue ?? ''} onChange={(v) => set({ startValue: num(v) })} />
               </div>
               <div className="rounded-lg bg-brand-50 p-3 text-sm text-brand-700">
-                按年化 {(inv.annualReturnRate * 100).toFixed(2)}% 复利推算至今，当前余额约{' '}
+                Compounded at {(inv.annualReturnRate * 100).toFixed(2)}%/yr to today, current balance ≈{' '}
                 <span className="font-semibold">{formatCurrency(currentInvestmentValue(inv))}</span>
-                {inv.currency === 'USD' && <span className="ml-1 text-xs text-brand-500">（已折算加元）</span>}
-                <span className="ml-1 text-xs text-brand-500">（不含中途追加，追加请直接填当前余额）</span>
+                {inv.currency === 'USD' && <span className="ml-1 text-xs text-brand-500">(converted to CAD)</span>}
+                <span className="ml-1 text-xs text-brand-500">(excludes later contributions — enter the current balance directly for those)</span>
               </div>
             </div>
           )}
@@ -127,35 +127,35 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
 
         {inv.type === 'TFSA' && (
           <div className="space-y-3 rounded-lg bg-emerald-50 p-3">
-            <p className="text-xs text-emerald-700">TFSA 收益完全免税，不计入 GIS 净收入测试。</p>
+            <p className="text-xs text-emerald-700">TFSA growth is fully tax-free and excluded from the GIS income test.</p>
             <div className="grid grid-cols-2 gap-3">
-              <FormInput label="剩余贡献额度" type="number" prefix="$" value={inv.tfsa?.contributionRoom ?? ''} onChange={(v) => set({ tfsa: { annualNewRoom: inv.tfsa?.annualNewRoom ?? 7000, contributionRoom: num(v) } })} />
-              <FormInput label="每年新增额度" type="number" prefix="$" value={inv.tfsa?.annualNewRoom ?? 7000} onChange={(v) => set({ tfsa: { contributionRoom: inv.tfsa?.contributionRoom ?? 0, annualNewRoom: num(v) } })} />
+              <FormInput label="Remaining room" type="number" prefix="$" value={inv.tfsa?.contributionRoom ?? ''} onChange={(v) => set({ tfsa: { annualNewRoom: inv.tfsa?.annualNewRoom ?? 7000, contributionRoom: num(v) } })} />
+              <FormInput label="New room per year" type="number" prefix="$" value={inv.tfsa?.annualNewRoom ?? 7000} onChange={(v) => set({ tfsa: { contributionRoom: inv.tfsa?.contributionRoom ?? 0, annualNewRoom: num(v) } })} />
             </div>
           </div>
         )}
 
         {inv.type === 'non_registered' && (
           <div className="space-y-3">
-            <FormInput label="原始成本 (ACB)" type="number" prefix="$" value={inv.acb ?? ''} onChange={(v) => set({ acb: num(v) })} />
+            <FormInput label="Cost basis (ACB)" type="number" prefix="$" value={inv.acb ?? ''} onChange={(v) => set({ acb: num(v) })} />
             <div className="rounded-lg bg-slate-50 p-3">
               <SliderInput
-                label="其中股息/分红收益率"
+                label="Of which dividend yield"
                 value={inv.dividendYield ?? 0}
                 onChange={(v) => set({ dividendYield: Math.min(v, inv.annualReturnRate) })}
                 max={inv.annualReturnRate}
                 step={0.0025}
               />
               <p className="mt-2 text-xs text-slate-500">
-                股息每年发放并计税；余下{' '}
+                Dividends are paid out and taxed each year; the remaining{' '}
                 <span className="font-medium text-slate-700">
                   {((inv.annualReturnRate - (inv.dividendYield ?? 0)) * 100).toFixed(2)}%
                 </span>{' '}
-                为资本增值，卖出前不计税。
+                is capital growth, untaxed until sold.
               </p>
             </div>
             <div>
-              <span className="label">股息类型</span>
+              <span className="label">Dividend type</span>
               <div className="grid grid-cols-3 gap-2">
                 {dividendOptions.map((o) => (
                   <button key={o.value} className={`btn ${inv.dividendType === o.value ? 'btn-primary' : 'btn-secondary'}`} onClick={() => set({ dividendType: o.value })}>
@@ -164,10 +164,10 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
                 ))}
               </div>
               {inv.dividendType === 'eligible' && (
-                <p className="mt-1 text-xs text-amber-600">合格股息将以 ×1.38 grossed-up 计入净收入，可能影响 GIS。</p>
+                <p className="mt-1 text-xs text-amber-600">Eligible dividends are grossed-up ×1.38 into net income, which can affect GIS.</p>
               )}
               {inv.dividendType === 'none' && (
-                <p className="mt-1 text-xs text-emerald-600">无股息（纯增值 ETF）最适合 GIS 优化策略。</p>
+                <p className="mt-1 text-xs text-emerald-600">No dividends (pure growth ETF) is best for GIS optimization.</p>
               )}
             </div>
           </div>
@@ -175,27 +175,27 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
 
         {inv.type === 'GIC' && (
           <div className="grid grid-cols-2 gap-3">
-            <FormInput label="到期日" type="date" value={inv.gic?.maturityDate ?? ''} onChange={(v) => set({ gic: { interestRate: inv.gic?.interestRate ?? inv.annualReturnRate, isCompound: inv.gic?.isCompound ?? true, maturityDate: v } })} />
-            <FormInput label="利率" type="number" step="0.001" value={inv.gic?.interestRate ?? inv.annualReturnRate} onChange={(v) => set({ gic: { maturityDate: inv.gic?.maturityDate ?? '', isCompound: inv.gic?.isCompound ?? true, interestRate: num(v) } })} />
+            <FormInput label="Maturity date" type="date" value={inv.gic?.maturityDate ?? ''} onChange={(v) => set({ gic: { interestRate: inv.gic?.interestRate ?? inv.annualReturnRate, isCompound: inv.gic?.isCompound ?? true, maturityDate: v } })} />
+            <FormInput label="Interest rate" type="number" step="0.001" value={inv.gic?.interestRate ?? inv.annualReturnRate} onChange={(v) => set({ gic: { maturityDate: inv.gic?.maturityDate ?? '', isCompound: inv.gic?.isCompound ?? true, interestRate: num(v) } })} />
           </div>
         )}
 
         {!isFamilyLoan && (
           <div>
-            <span className="label">提取优先级（用于cover支出的取款顺序）</span>
+            <span className="label">Withdrawal priority (order used to fund expenses)</span>
             <select
               className="input"
               value={inv.withdrawalPriority ?? 0}
               onChange={(e) => set({ withdrawalPriority: Number(e.target.value) })}
             >
-              <option value={0}>不用于提取</option>
-              <option value={1}>1 — 最先取</option>
+              <option value={0}>Not used for withdrawals</option>
+              <option value={1}>1 — first</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
-              <option value={4}>4 — 最后取</option>
+              <option value={4}>4 — last</option>
             </select>
             <p className="mt-1 text-xs text-slate-400">
-              当年现金收入不足以支付支出时，按此顺序从账户取款。非注册取款仅资本利得的50%计税，TFSA免税，RRSP全额计税。
+              When a year's cash income can't cover expenses, accounts are drawn in this order. Non-registered withdrawals tax only 50% of the capital gain; TFSA is tax-free; RRSP is fully taxable.
             </p>
           </div>
         )}
@@ -203,15 +203,15 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
         <div className="rounded-lg border border-slate-200 p-3">
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={isFamilyLoan} onChange={(e) => toggleFamilyLoan(e.target.checked)} />
-            这是一笔家庭借款（借出去的钱）
+            This is a family loan (money lent out)
           </label>
           {isFamilyLoan && inv.familyLoan && (
             <div className="mt-3 space-y-3">
-              <FormInput label="借款人姓名" value={inv.familyLoan.borrowerName} onChange={(v) => set({ familyLoan: { ...inv.familyLoan!, borrowerName: v } })} />
-              <FormInput label="借出金额" type="number" prefix="$" value={inv.familyLoan.principalAmount || ''} onChange={(v) => set({ familyLoan: { ...inv.familyLoan!, principalAmount: num(v) } })} />
+              <FormInput label="Borrower name" value={inv.familyLoan.borrowerName} onChange={(v) => set({ familyLoan: { ...inv.familyLoan!, borrowerName: v } })} />
+              <FormInput label="Amount lent" type="number" prefix="$" value={inv.familyLoan.principalAmount || ''} onChange={(v) => set({ familyLoan: { ...inv.familyLoan!, principalAmount: num(v) } })} />
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={inv.familyLoan.isInterestFree} onChange={(e) => set({ familyLoan: { ...inv.familyLoan!, isInterestFree: e.target.checked } })} />
-                无息借款（本金返还不计入收入）
+                Interest-free (principal repayment is not income)
               </label>
               <RepaymentEditor inv={inv} set={set} num={num} />
             </div>
@@ -220,8 +220,8 @@ export default function InvestmentForm({ initial, onSave, onCancel }: Investment
       </div>
 
       <div className="mt-4 flex justify-end gap-2 border-t border-slate-200 pt-4">
-        <button className="btn-secondary" onClick={onCancel}>取消</button>
-        <button className="btn-primary" onClick={() => onSave(inv)}>保存</button>
+        <button className="btn-secondary" onClick={onCancel}>Cancel</button>
+        <button className="btn-primary" onClick={() => onSave(inv)}>Save</button>
       </div>
     </div>
   )
@@ -262,17 +262,17 @@ function RepaymentEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="label mb-0">还款计划</span>
-        <button className="btn-ghost text-sm text-brand-600" onClick={addRow}>+ 添加年度</button>
+        <span className="label mb-0">Repayment schedule</span>
+        <button className="btn-ghost text-sm text-brand-600" onClick={addRow}>+ Add year</button>
       </div>
       {fl.repaymentSchedule.map((r, i) => (
         <div key={i} className="flex items-center gap-2">
           <input className="input" type="number" value={r.year} onChange={(e) => updateRow(i, { year: num(e.target.value) })} />
-          <input className="input" type="number" placeholder="金额" value={r.amount || ''} onChange={(e) => updateRow(i, { amount: num(e.target.value) })} />
+          <input className="input" type="number" placeholder="Amount" value={r.amount || ''} onChange={(e) => updateRow(i, { amount: num(e.target.value) })} />
           <button className="text-rose-500" onClick={() => removeRow(i)}>✕</button>
         </div>
       ))}
-      <div className="text-xs text-slate-400">计划还款总额：{formatCurrency(totalScheduled)}（本金 {formatCurrency(fl.principalAmount)}）</div>
+      <div className="text-xs text-slate-400">Total scheduled repayment: {formatCurrency(totalScheduled)} (principal {formatCurrency(fl.principalAmount)})</div>
     </div>
   )
 }
